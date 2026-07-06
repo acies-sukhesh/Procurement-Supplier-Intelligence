@@ -1,0 +1,19 @@
+{
+  "statusScores": {
+    "Pass": 1.0,
+    "Watch": 0.5,
+    "Below Threshold": 0.4,
+    "Missing": 0,
+    "Invalid": 0,
+    "Critical Flag": 0
+  },
+  "notApplicableExcludedFromDenominator": true,
+  "labelBands": [
+    { "label": "Best-fit Shortlist", "min": 0.85 },
+    { "label": "Conditional", "min": 0.65 },
+    { "label": "Needs Review", "min": 0.45 },
+    { "label": "Low Fit", "min": 0 }
+  ],
+  "criticalFlagLabel": "Critical Flag / Review",
+  "gateCapLabel": "Needs Review"
+}

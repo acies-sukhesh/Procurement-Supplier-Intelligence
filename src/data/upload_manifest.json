@@ -1,0 +1,252 @@
+[
+  {
+    "documentId": "DOC-001",
+    "supplierId": "SUP-A",
+    "documentName": "SUP-A_01_Corporate_Profile_and_Onboarding.pdf",
+    "documentType": "Corporate Profile / Supplier Master",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-02",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-002",
+    "supplierId": "SUP-A",
+    "documentName": "SUP-A_02_QMS_Certificate.pdf",
+    "documentType": "Quality Certificate",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2024-06-01",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-003",
+    "supplierId": "SUP-A",
+    "documentName": "SUP-A_03_PPAP_Summary.pdf",
+    "documentType": "PPAP / Production Part Approval",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-05-12",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-004",
+    "supplierId": "SUP-A",
+    "documentName": "SUP-A_04_Process_Capability_Report.pdf",
+    "documentType": "Process Capability / SPC Report",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-10",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-005",
+    "supplierId": "SUP-A",
+    "documentName": "SUP-A_05_Capacity_and_Machine_List.pdf",
+    "documentType": "Capacity / Machine Capability",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-12",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-006",
+    "supplierId": "SUP-A",
+    "documentName": "SUP-A_06_Quality_Delivery_Performance.pdf",
+    "documentType": "Quality / Delivery Performance",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-20",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-007",
+    "supplierId": "SUP-D",
+    "documentName": "SUP-D_01_Corporate_Profile_and_Onboarding.pdf",
+    "documentType": "Corporate Profile / Supplier Master",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-03",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-008",
+    "supplierId": "SUP-D",
+    "documentName": "SUP-D_02_Operational_Performance_Pack.pdf",
+    "documentType": "PPAP / Process / Capacity / Quality Pack",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-14",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-009",
+    "supplierId": "SUP-D",
+    "documentName": "SUP-D_03_Compliance_Declaration.pdf",
+    "documentType": "Compliance Declaration",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-16",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-010",
+    "supplierId": "SUP-D",
+    "documentName": "SUP-D_04_Independent_Trade_Screening_Result.pdf",
+    "documentType": "Trade / Export Screening",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-18",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-011",
+    "supplierId": "SUP-D",
+    "documentName": "SUP-D_05_Business_Continuity_Summary.pdf",
+    "documentType": "Business Continuity Plan",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-15",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-012",
+    "supplierId": "SUP-E",
+    "documentName": "SUP-E_01_Corporate_Profile_and_Onboarding.pdf",
+    "documentType": "Corporate Profile / Supplier Master",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-05",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-013",
+    "supplierId": "SUP-E",
+    "documentName": "SUP-E_02_Generic_Capability_Statement.pdf",
+    "documentType": "Capability Statement",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-07",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-014",
+    "supplierId": "SUP-E",
+    "documentName": "SUP-E_03_Expired_QMS_Certificate.pdf",
+    "documentType": "Quality Certificate",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2019-04-01",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-015",
+    "supplierId": "SUP-E",
+    "documentName": "SUP-E_04_Audit_Financial_Insurance_Pack.pdf",
+    "documentType": "Audit Report / Financial Summary / Insurance Gap",
+    "pageCount": 2,
+    "fileSizeKB": 3,
+    "uploadedAt": "2026-06-20",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-016",
+    "supplierId": "SUP-B",
+    "documentName": "SUP-B_01_Corporate_Profile_and_Onboarding.pdf",
+    "documentType": "Corporate Profile / Supplier Master",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-03",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-017",
+    "supplierId": "SUP-B",
+    "documentName": "SUP-B_02_QMS_Certificate.pdf",
+    "documentType": "Quality Certificate",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2024-04-10",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-018",
+    "supplierId": "SUP-B",
+    "documentName": "SUP-B_03_PPAP_Summary.pdf",
+    "documentType": "PPAP / Production Part Approval",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-05-20",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-019",
+    "supplierId": "SUP-B",
+    "documentName": "SUP-B_04_Process_Capability_Report.pdf",
+    "documentType": "Process Capability / SPC Report",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-11",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-020",
+    "supplierId": "SUP-B",
+    "documentName": "SUP-B_05_Capacity_and_Machine_List.pdf",
+    "documentType": "Capacity / Machine Capability",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-13",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-021",
+    "supplierId": "SUP-B",
+    "documentName": "SUP-B_06_Quality_Delivery_Performance.pdf",
+    "documentType": "Quality / Delivery Performance",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-21",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-022",
+    "supplierId": "SUP-C",
+    "documentName": "SUP-C_01_Corporate_Profile_and_Onboarding.pdf",
+    "documentType": "Corporate Profile / Supplier Master",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-04",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-023",
+    "supplierId": "SUP-C",
+    "documentName": "SUP-C_02_Generic_Capability_Statement.pdf",
+    "documentType": "Capability Statement",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-09",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-024",
+    "supplierId": "SUP-C",
+    "documentName": "SUP-C_03_Process_Capability_Report.pdf",
+    "documentType": "Process Capability / SPC Report",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-14",
+    "textExtractable": true
+  },
+  {
+    "documentId": "DOC-025",
+    "supplierId": "SUP-C",
+    "documentName": "SUP-C_04_Quality_Delivery_Performance.pdf",
+    "documentType": "Quality / Delivery Performance",
+    "pageCount": 2,
+    "fileSizeKB": 2,
+    "uploadedAt": "2026-06-22",
+    "textExtractable": true
+  }
+]

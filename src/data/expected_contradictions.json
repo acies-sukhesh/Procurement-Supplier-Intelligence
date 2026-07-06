@@ -1,0 +1,42 @@
+[
+  {
+    "contradictionId": "CON-001",
+    "supplierId": "SUP-D",
+    "field": "trade_compliance_screening_status",
+    "leafFactorCode": "LF6.2",
+    "claimA": {
+      "claimId": "CLM-025",
+      "value": "Clear",
+      "source": "SUP-D_03_Compliance_Declaration.pdf",
+      "page": 1
+    },
+    "claimB": {
+      "claimId": "CLM-029",
+      "value": "Hit",
+      "source": "SUP-D_04_Independent_Trade_Screening_Result.pdf",
+      "page": 1
+    },
+    "severity": "High",
+    "description": "Supplier self-declaration conflicts with independent screening result"
+  },
+  {
+    "contradictionId": "CON-002",
+    "supplierId": "SUP-E",
+    "field": "available_capacity_units_month",
+    "leafFactorCode": "LF2.2",
+    "claimA": {
+      "claimId": "CLM-034",
+      "value": "8000 units/month",
+      "source": "SUP-E_02_Generic_Capability_Statement.pdf",
+      "page": 1
+    },
+    "claimB": {
+      "claimId": "CLM-041",
+      "value": "6200 units/month",
+      "source": "SUP-E_04_Audit_Financial_Insurance_Pack.pdf",
+      "page": 1
+    },
+    "severity": "Medium",
+    "description": "1800 units/month difference between supplier statement and buyer audit"
+  }
+]

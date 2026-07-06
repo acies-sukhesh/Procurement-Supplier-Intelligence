@@ -1,0 +1,316 @@
+[
+  {
+    "documentId": "DOC-001",
+    "expectedType": "Corporate Profile / Supplier Master",
+    "coveredDFs": [
+      "DF6"
+    ],
+    "coveredFields": [
+      "duns_number",
+      "insurance_expiry_date",
+      "legal_corporate_name"
+    ]
+  },
+  {
+    "documentId": "DOC-002",
+    "expectedType": "Quality Certificate",
+    "coveredDFs": [
+      "DF3"
+    ],
+    "coveredFields": [
+      "qms_certificate_status"
+    ]
+  },
+  {
+    "documentId": "DOC-003",
+    "expectedType": "PPAP / Production Part Approval",
+    "coveredDFs": [
+      "DF1",
+      "DF3"
+    ],
+    "coveredFields": [
+      "dimensional_inspection_evidence",
+      "ppap_approval_status"
+    ]
+  },
+  {
+    "documentId": "DOC-004",
+    "expectedType": "Process Capability / SPC Report",
+    "coveredDFs": [
+      "DF1",
+      "DF3"
+    ],
+    "coveredFields": [
+      "min_process_cpk_value",
+      "process_cpk_value"
+    ]
+  },
+  {
+    "documentId": "DOC-005",
+    "expectedType": "Capacity / Machine Capability",
+    "coveredDFs": [
+      "DF1",
+      "DF2"
+    ],
+    "coveredFields": [
+      "available_capacity_units_month",
+      "equipment_oee_pct",
+      "installed_capacity_units_month",
+      "ramp_up_leadtime_weeks"
+    ]
+  },
+  {
+    "documentId": "DOC-006",
+    "expectedType": "Quality / Delivery Performance",
+    "coveredDFs": [
+      "DF3",
+      "DF4"
+    ],
+    "coveredFields": [
+      "capa_closure_rate_pct",
+      "on_time_delivery_pct",
+      "quality_ppm"
+    ]
+  },
+  {
+    "documentId": "DOC-007",
+    "expectedType": "Corporate Profile / Supplier Master",
+    "coveredDFs": [],
+    "coveredFields": [
+      "legal_corporate_name",
+      "plant_address"
+    ]
+  },
+  {
+    "documentId": "DOC-008",
+    "expectedType": "PPAP / Process / Capacity / Quality Pack",
+    "coveredDFs": [
+      "DF1",
+      "DF2",
+      "DF3",
+      "DF4",
+      "DF7"
+    ],
+    "coveredFields": [
+      "available_capacity_units_month",
+      "on_time_delivery_pct",
+      "ppap_approval_status",
+      "process_cpk_value",
+      "quality_ppm",
+      "ramp_up_leadtime_weeks",
+      "single_source_risk_level"
+    ]
+  },
+  {
+    "documentId": "DOC-009",
+    "expectedType": "Compliance Declaration",
+    "coveredDFs": [
+      "DF6"
+    ],
+    "coveredFields": [
+      "abac_policy_status",
+      "regulatory_compliance_status",
+      "tisax_status",
+      "trade_compliance_screening_status"
+    ]
+  },
+  {
+    "documentId": "DOC-010",
+    "expectedType": "Trade / Export Screening",
+    "coveredDFs": [
+      "DF6"
+    ],
+    "coveredFields": [
+      "trade_compliance_screening_status"
+    ]
+  },
+  {
+    "documentId": "DOC-011",
+    "expectedType": "Business Continuity Plan",
+    "coveredDFs": [
+      "DF7"
+    ],
+    "coveredFields": [
+      "bcp_status",
+      "subtier_continuity_evidence"
+    ]
+  },
+  {
+    "documentId": "DOC-012",
+    "expectedType": "Corporate Profile / Supplier Master",
+    "coveredDFs": [],
+    "coveredFields": [
+      "duns_number",
+      "quality_contact"
+    ]
+  },
+  {
+    "documentId": "DOC-013",
+    "expectedType": "Capability Statement",
+    "coveredDFs": [
+      "DF1",
+      "DF2",
+      "DF3"
+    ],
+    "coveredFields": [
+      "available_capacity_units_month",
+      "process_cpk_value",
+      "quality_system_claim"
+    ]
+  },
+  {
+    "documentId": "DOC-014",
+    "expectedType": "Quality Certificate",
+    "coveredDFs": [
+      "DF3"
+    ],
+    "coveredFields": [
+      "iatf_cert_expiry_date",
+      "qms_certificate_status"
+    ]
+  },
+  {
+    "documentId": "DOC-015",
+    "expectedType": "Audit Report / Financial Summary / Insurance Gap",
+    "coveredDFs": [
+      "DF1",
+      "DF2",
+      "DF3",
+      "DF4",
+      "DF5",
+      "DF7"
+    ],
+    "coveredFields": [
+      "available_capacity_units_month",
+      "bcp_status",
+      "credit_risk_rating",
+      "current_ratio",
+      "insurance_coverage_status",
+      "on_time_delivery_pct",
+      "preventive_maintenance_status",
+      "quality_ppm"
+    ]
+  },
+  {
+    "documentId": "DOC-016",
+    "expectedType": "Corporate Profile / Supplier Master",
+    "coveredDFs": [],
+    "coveredFields": [
+      "legal_corporate_name"
+    ]
+  },
+  {
+    "documentId": "DOC-017",
+    "expectedType": "Quality Certificate",
+    "coveredDFs": [
+      "DF3"
+    ],
+    "coveredFields": [
+      "iatf_cert_expiry_date"
+    ]
+  },
+  {
+    "documentId": "DOC-018",
+    "expectedType": "PPAP / Production Part Approval",
+    "coveredDFs": [
+      "DF3"
+    ],
+    "coveredFields": [
+      "ppap_approval_status"
+    ]
+  },
+  {
+    "documentId": "DOC-019",
+    "expectedType": "Process Capability / SPC Report",
+    "coveredDFs": [
+      "DF1"
+    ],
+    "coveredFields": [
+      "equipment_oee_pct",
+      "material_capability_status",
+      "process_cpk_value"
+    ]
+  },
+  {
+    "documentId": "DOC-020",
+    "expectedType": "Capacity / Machine Capability",
+    "coveredDFs": [
+      "DF2"
+    ],
+    "coveredFields": [
+      "available_capacity_units_month",
+      "installed_capacity_units_month",
+      "ramp_up_leadtime_weeks"
+    ]
+  },
+  {
+    "documentId": "DOC-021",
+    "expectedType": "Quality / Delivery Performance",
+    "coveredDFs": [
+      "DF3",
+      "DF4",
+      "DF5",
+      "DF6",
+      "DF7"
+    ],
+    "coveredFields": [
+      "bcp_status",
+      "credit_risk_rating",
+      "current_ratio",
+      "on_time_delivery_pct",
+      "quality_ppm",
+      "trade_compliance_screening_status"
+    ]
+  },
+  {
+    "documentId": "DOC-022",
+    "expectedType": "Corporate Profile / Supplier Master",
+    "coveredDFs": [],
+    "coveredFields": [
+      "legal_corporate_name"
+    ]
+  },
+  {
+    "documentId": "DOC-023",
+    "expectedType": "Capability Statement",
+    "coveredDFs": [
+      "DF1",
+      "DF2"
+    ],
+    "coveredFields": [
+      "available_capacity_units_month",
+      "installed_capacity_units_month",
+      "material_capability_status"
+    ]
+  },
+  {
+    "documentId": "DOC-024",
+    "expectedType": "Process Capability / SPC Report",
+    "coveredDFs": [
+      "DF1",
+      "DF3"
+    ],
+    "coveredFields": [
+      "equipment_oee_pct",
+      "iatf_cert_expiry_date",
+      "process_cpk_value"
+    ]
+  },
+  {
+    "documentId": "DOC-025",
+    "expectedType": "Quality / Delivery Performance",
+    "coveredDFs": [
+      "DF3",
+      "DF4",
+      "DF5",
+      "DF6"
+    ],
+    "coveredFields": [
+      "credit_risk_rating",
+      "current_ratio",
+      "on_time_delivery_pct",
+      "quality_ppm",
+      "trade_compliance_screening_status"
+    ]
+  }
+]

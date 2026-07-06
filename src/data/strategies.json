@@ -1,0 +1,7 @@
+[
+  { "id": "Quality & Risk", "name": "Quality & Risk Priority", "weights": { "DF1": 20, "DF2": 10, "DF3": 25, "DF4": 10, "DF5": 10, "DF6": 15, "DF7": 10 }, "mandatoryFloor": 0.45 },
+  { "id": "Delivery", "name": "Delivery Priority", "weights": { "DF1": 10, "DF2": 20, "DF3": 15, "DF4": 30, "DF5": 5, "DF6": 10, "DF7": 10 }, "mandatoryFloor": 0.4 },
+  { "id": "Capacity", "name": "Capacity Priority", "weights": { "DF1": 10, "DF2": 30, "DF3": 15, "DF4": 15, "DF5": 10, "DF6": 10, "DF7": 10 }, "mandatoryFloor": 0.4 },
+  { "id": "Balanced", "name": "Balanced", "weights": { "DF1": 15, "DF2": 15, "DF3": 15, "DF4": 15, "DF5": 13, "DF6": 13, "DF7": 14 }, "mandatoryFloor": 0.4 },
+  { "id": "Risk & Continuity", "name": "Risk & Continuity Priority", "weights": { "DF1": 10, "DF2": 10, "DF3": 15, "DF4": 10, "DF5": 15, "DF6": 15, "DF7": 25 }, "mandatoryFloor": 0.45 }
+]

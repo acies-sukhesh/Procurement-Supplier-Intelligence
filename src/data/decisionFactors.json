@@ -1,0 +1,9 @@
+[
+  { "code": "DF1", "name": "Technical Capability", "short": "Technical" },
+  { "code": "DF2", "name": "Capacity", "short": "Capacity" },
+  { "code": "DF3", "name": "Quality", "short": "Quality" },
+  { "code": "DF4", "name": "Delivery", "short": "Delivery" },
+  { "code": "DF5", "name": "Financial", "short": "Financial" },
+  { "code": "DF6", "name": "Compliance", "short": "Compliance" },
+  { "code": "DF7", "name": "Supply Continuity Risk", "short": "Continuity" }
+]

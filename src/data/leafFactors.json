@@ -1,0 +1,51 @@
+[
+  { "code": "LF1.1", "df": "DF1", "name": "Process Capability", "canonicalField": "process_cpk_value" },
+  { "code": "LF1.2", "df": "DF1", "name": "Equipment Capability (OEE)", "canonicalField": "equipment_oee_pct" },
+  { "code": "LF1.3", "df": "DF1", "name": "Material Capability", "canonicalField": "material_capability_status" },
+  { "code": "LF1.4", "df": "DF1", "name": "Tolerance & Precision Capability", "canonicalField": "tolerance_capability_status" },
+  { "code": "LF1.5", "df": "DF1", "name": "Special Process Capability", "canonicalField": "special_process_capability_status" },
+  { "code": "LF1.6", "df": "DF1", "name": "Engineering Capability", "canonicalField": "engineering_capability_level" },
+  { "code": "LF1.7", "df": "DF1", "name": "Similar Part Experience", "canonicalField": "similar_part_experience_count" },
+  { "code": "LF1.8", "df": "DF1", "name": "Industry & Domain Experience", "canonicalField": "automotive_experience_years" },
+
+  { "code": "LF2.1", "df": "DF2", "name": "Installed Capacity", "canonicalField": "installed_capacity_units_month" },
+  { "code": "LF2.2", "df": "DF2", "name": "Available Capacity", "canonicalField": "available_capacity_units_month" },
+  { "code": "LF2.3", "df": "DF2", "name": "Scalability & Ramp Capability", "canonicalField": "ramp_up_leadtime_weeks" },
+  { "code": "LF2.4", "df": "DF2", "name": "Customer Concentration Risk", "canonicalField": "top_customer_revenue_share_pct" },
+  { "code": "LF2.5", "df": "DF2", "name": "Peak Demand & Flexibility", "canonicalField": "surge_capacity_pct" },
+
+  { "code": "LF3.1", "df": "DF3", "name": "QMS Certification", "canonicalField": "iatf_cert_expiry_date" },
+  { "code": "LF3.2", "df": "DF3", "name": "SPC & In-Process Quality", "canonicalField": "spc_deployment_level" },
+  { "code": "LF3.3", "df": "DF3", "name": "Inspection & Measurement (GR&R)", "canonicalField": "msa_grr_pct" },
+  { "code": "LF3.4", "df": "DF3", "name": "Nonconformance Management (CAPA)", "canonicalField": "capa_closure_rate_pct" },
+  { "code": "LF3.5", "df": "DF3", "name": "Supplier Quality History (PPM)", "canonicalField": "quality_ppm" },
+  { "code": "LF3.6", "df": "DF3", "name": "PPAP & Launch Capability", "canonicalField": "ppap_approval_status" },
+
+  { "code": "LF4.1", "df": "DF4", "name": "On-Time Delivery Performance", "canonicalField": "on_time_delivery_pct" },
+  { "code": "LF4.2", "df": "DF4", "name": "Lead Time Reliability", "canonicalField": "lead_time_days" },
+  { "code": "LF4.3", "df": "DF4", "name": "Logistics & Shipping Capability", "canonicalField": "logistics_capability_status" },
+  { "code": "LF4.4", "df": "DF4", "name": "Production Planning & Scheduling", "canonicalField": "schedule_adherence_pct" },
+  { "code": "LF4.5", "df": "DF4", "name": "Inventory & Buffer Management", "canonicalField": "buffer_stock_days" },
+  { "code": "LF4.6", "df": "DF4", "name": "Flexibility & Responsiveness", "canonicalField": "order_flexibility_level" },
+
+  { "code": "LF5.1", "df": "DF5", "name": "Liquidity (Current Ratio)", "canonicalField": "current_ratio" },
+  { "code": "LF5.2", "df": "DF5", "name": "Solvency & Leverage", "canonicalField": "debt_to_equity_ratio" },
+  { "code": "LF5.3", "df": "DF5", "name": "Profitability & Cash Flow", "canonicalField": "operating_margin_pct" },
+  { "code": "LF5.4", "df": "DF5", "name": "Revenue Scale & Stability", "canonicalField": "annual_revenue_amount" },
+  { "code": "LF5.5", "df": "DF5", "name": "Financial Distress Signals", "canonicalField": "credit_risk_rating" },
+  { "code": "LF5.6", "df": "DF5", "name": "Insurance & Financial Risk Coverage", "canonicalField": "insurance_coverage_status" },
+
+  { "code": "LF6.1", "df": "DF6", "name": "Regulatory & Legal Compliance", "canonicalField": "regulatory_compliance_status" },
+  { "code": "LF6.2", "df": "DF6", "name": "Trade & Export Compliance", "canonicalField": "trade_compliance_screening_status" },
+  { "code": "LF6.3", "df": "DF6", "name": "Anti-Bribery & Anti-Corruption", "canonicalField": "abac_policy_status" },
+  { "code": "LF6.4", "df": "DF6", "name": "ESG & Sustainability", "canonicalField": "esg_rating" },
+  { "code": "LF6.5", "df": "DF6", "name": "Data Security & IP Protection", "canonicalField": "tisax_status" },
+  { "code": "LF6.6", "df": "DF6", "name": "Ethical Sourcing & Human Rights", "canonicalField": "ethical_sourcing_status" },
+
+  { "code": "LF7.1", "df": "DF7", "name": "Single Source & Concentration Risk", "canonicalField": "single_source_risk_level" },
+  { "code": "LF7.2", "df": "DF7", "name": "Geographic & Geopolitical Risk", "canonicalField": "geopolitical_risk_level" },
+  { "code": "LF7.3", "df": "DF7", "name": "Sub-Tier & Supply Chain Dependency", "canonicalField": "subtier_dependency_level" },
+  { "code": "LF7.4", "df": "DF7", "name": "Business Continuity Planning", "canonicalField": "bcp_status" },
+  { "code": "LF7.5", "df": "DF7", "name": "Supplier Stability & Ownership Risk", "canonicalField": "ownership_stability_status" },
+  { "code": "LF7.6", "df": "DF7", "name": "Capacity Resilience & Redundancy", "canonicalField": "alternate_site_available" }
+]

@@ -1,0 +1,52 @@
+{
+  "_comment": "Threshold bands per canonical field. Numeric fields use pass/watch with direction gte (higher is better) or lte (lower is better). Fields with relativeTo are compared as a ratio to that context value (e.g. available capacity vs monthly demand). Enum fields use passSet/watchSet/failSet. Date fields use bufferDays against the evaluation date. Bands marked provisional follow the same pattern as the representative bands in the source spec and are documented here for review.",
+  "process_cpk_value": { "type": "numeric", "unit": "Cpk", "direction": "gte", "pass": 1.67, "watch": 1.33, "evidence": "Process capability study (Cpk)", "provisional": false },
+  "equipment_oee_pct": { "type": "numeric", "unit": "%", "direction": "gte", "pass": 80, "watch": 70, "evidence": "OEE report", "provisional": false },
+  "material_capability_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Certified", "Approved"], "watchSet": ["In Progress", "Pending"], "failSet": ["Not Certified", "None"], "evidence": "Material certifications / approvals", "provisional": true },
+  "tolerance_capability_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Capable", "Meets Spec"], "watchSet": ["Marginal"], "failSet": ["Not Capable"], "evidence": "Dimensional / tolerance study", "provisional": true },
+  "special_process_capability_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Qualified", "Certified"], "watchSet": ["In Progress"], "failSet": ["Not Qualified", "None"], "evidence": "Special-process qualification (e.g. Nadcap)", "provisional": true },
+  "engineering_capability_level": { "type": "enum", "unit": "level", "direction": "enum", "passSet": ["Full", "Advanced"], "watchSet": ["Basic", "Partial"], "failSet": ["None"], "evidence": "Engineering / design capability profile", "provisional": true },
+  "similar_part_experience_count": { "type": "numeric", "unit": "programs", "direction": "gte", "pass": 3, "watch": 1, "evidence": "Reference list of comparable parts", "provisional": true },
+  "automotive_experience_years": { "type": "numeric", "unit": "years", "direction": "gte", "pass": 5, "watch": 2, "evidence": "Domain / industry track record", "provisional": true },
+
+  "installed_capacity_units_month": { "type": "numeric", "unit": "units/mo", "direction": "gte", "relativeTo": "monthly_demand", "pass": 1.2, "watch": 1.0, "evidence": "Installed capacity statement", "provisional": true },
+  "available_capacity_units_month": { "type": "numeric", "unit": "units/mo", "direction": "gte", "relativeTo": "monthly_demand", "pass": 1.2, "watch": 1.0, "dependency": { "field": "installed_capacity_units_month", "op": "lte" }, "evidence": "Available capacity / free headroom", "provisional": false },
+  "ramp_up_leadtime_weeks": { "type": "numeric", "unit": "weeks", "direction": "lte", "pass": 6, "watch": 8, "evidence": "Ramp-up / scalability plan", "provisional": false },
+  "top_customer_revenue_share_pct": { "type": "numeric", "unit": "%", "direction": "lte", "pass": 30, "watch": 50, "evidence": "Customer concentration disclosure", "provisional": true },
+  "surge_capacity_pct": { "type": "numeric", "unit": "%", "direction": "gte", "pass": 20, "watch": 10, "evidence": "Surge / peak flexibility statement", "provisional": true },
+
+  "iatf_cert_expiry_date": { "type": "date", "unit": "date", "direction": "date", "bufferDays": 30, "criticalFlagRule": "qms_cert", "evidence": "IATF / ISO / AS9100 / ISO13485 certificate", "provisional": false },
+  "spc_deployment_level": { "type": "enum", "unit": "level", "direction": "enum", "passSet": ["Full", "Advanced"], "watchSet": ["Partial", "Basic"], "failSet": ["None"], "evidence": "SPC deployment evidence", "provisional": true },
+  "msa_grr_pct": { "type": "numeric", "unit": "%", "direction": "lte", "pass": 10, "watch": 30, "evidence": "MSA / Gage R&R study", "provisional": false },
+  "capa_closure_rate_pct": { "type": "numeric", "unit": "%", "direction": "gte", "pass": 95, "watch": 80, "evidence": "CAPA closure records", "provisional": false },
+  "quality_ppm": { "type": "numeric", "unit": "PPM", "direction": "lte", "pass": 50, "watch": 75, "evidence": "Historical defect PPM", "provisional": false },
+  "ppap_approval_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Approved"], "watchSet": ["Conditional", "Interim"], "failSet": ["Not Approved", "Rejected"], "criticalFlagRule": "ppap", "evidence": "PPAP submission / approval", "provisional": false },
+
+  "on_time_delivery_pct": { "type": "numeric", "unit": "%", "direction": "gte", "pass": 98, "watch": 95, "evidence": "On-time delivery history", "provisional": false },
+  "lead_time_days": { "type": "numeric", "unit": "days", "direction": "lte", "pass": 30, "watch": 60, "evidence": "Quoted / historical lead time", "provisional": true },
+  "logistics_capability_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Full", "Established"], "watchSet": ["Partial", "Developing"], "failSet": ["None", "Limited"], "evidence": "Logistics / shipping capability", "provisional": true },
+  "schedule_adherence_pct": { "type": "numeric", "unit": "%", "direction": "gte", "pass": 95, "watch": 85, "evidence": "Schedule adherence records", "provisional": true },
+  "buffer_stock_days": { "type": "numeric", "unit": "days", "direction": "gte", "pass": 10, "watch": 5, "evidence": "Buffer / safety-stock policy", "provisional": true },
+  "order_flexibility_level": { "type": "enum", "unit": "level", "direction": "enum", "passSet": ["High", "Flexible"], "watchSet": ["Medium", "Moderate"], "failSet": ["Low", "Rigid"], "evidence": "Order flexibility / responsiveness", "provisional": true },
+
+  "current_ratio": { "type": "numeric", "unit": "ratio", "direction": "gte", "pass": 1.2, "watch": 1.0, "evidence": "Current assets / current liabilities", "provisional": false },
+  "debt_to_equity_ratio": { "type": "numeric", "unit": "ratio", "direction": "lte", "pass": 1.5, "watch": 2.0, "evidence": "Debt / equity", "provisional": false },
+  "operating_margin_pct": { "type": "numeric", "unit": "%", "direction": "gte", "pass": 8, "watch": 3, "evidence": "Operating margin", "provisional": true },
+  "annual_revenue_amount": { "type": "numeric", "unit": "USD", "direction": "gte", "pass": 50000000, "watch": 10000000, "evidence": "Annual revenue", "provisional": true },
+  "credit_risk_rating": { "type": "enum", "unit": "rating", "direction": "enum", "passSet": ["Low"], "watchSet": ["Medium"], "failSet": ["High"], "criticalFlagRule": "credit", "evidence": "Third-party credit rating", "provisional": false },
+  "insurance_coverage_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Adequate", "In Place", "Compliant"], "watchSet": ["Partial", "Under Review"], "failSet": ["None", "Insufficient"], "evidence": "Certificate of insurance", "provisional": true },
+
+  "regulatory_compliance_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Compliant"], "watchSet": ["Under Review", "Minor Findings"], "failSet": ["Non-Compliant"], "criticalFlagRule": "regulatory", "evidence": "Regulatory / legal compliance attestation", "provisional": false },
+  "trade_compliance_screening_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Clear"], "watchSet": ["Pending", "Under Review"], "failSet": ["Hit"], "criticalFlagRule": "trade", "evidence": "Denied-party / export screening", "provisional": false },
+  "abac_policy_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Yes", "In Place", "Certified"], "watchSet": ["Partial", "In Progress"], "failSet": ["No", "None"], "criticalFlagRule": "abac", "evidence": "Anti-bribery / anti-corruption policy", "provisional": false },
+  "esg_rating": { "type": "enum", "unit": "rating", "direction": "enum", "passSet": ["A", "B", "Gold", "Silver"], "watchSet": ["C", "Bronze", "Pending"], "failSet": ["D", "None"], "evidence": "ESG rating / evidence", "provisional": true },
+  "tisax_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Certified", "Compliant", "AL3", "AL2"], "watchSet": ["In Progress", "AL1"], "failSet": ["None", "Not Certified"], "criticalFlagRule": "data_security", "evidence": "TISAX / information-security evidence", "provisional": false },
+  "ethical_sourcing_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Submitted", "Compliant", "Verified"], "watchSet": ["In Progress", "Partial"], "failSet": ["Not Submitted", "None"], "evidence": "Ethical-sourcing / human-rights declaration", "provisional": true },
+
+  "single_source_risk_level": { "type": "enum", "unit": "level", "direction": "enum", "passSet": ["Low", "Multi-Source"], "watchSet": ["Medium"], "failSet": ["High", "Single Source"], "evidence": "Source concentration assessment", "provisional": true },
+  "geopolitical_risk_level": { "type": "enum", "unit": "level", "direction": "enum", "passSet": ["Low"], "watchSet": ["Medium"], "failSet": ["High", "Blocked", "Sanctioned"], "criticalFlagRule": "geo", "evidence": "Geographic / geopolitical risk assessment", "provisional": false },
+  "subtier_dependency_level": { "type": "enum", "unit": "level", "direction": "enum", "passSet": ["Low", "Mapped"], "watchSet": ["Medium", "Partial"], "failSet": ["High", "Unknown"], "evidence": "Sub-tier mapping / visibility", "provisional": true },
+  "bcp_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Present & Tested"], "watchSet": ["Present, not tested", "Present"], "failSet": ["None", "Absent"], "evidence": "Business continuity plan", "provisional": true },
+  "ownership_stability_status": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Stable"], "watchSet": ["Recent Change", "Under Review"], "failSet": ["Unstable", "Distressed"], "evidence": "Ownership / stability disclosure", "provisional": true },
+  "alternate_site_available": { "type": "enum", "unit": "status", "direction": "enum", "passSet": ["Yes", "Multiple"], "watchSet": ["Planned", "Partial"], "failSet": ["No", "None"], "evidence": "Redundancy / alternate-site capability", "provisional": true }
+}
