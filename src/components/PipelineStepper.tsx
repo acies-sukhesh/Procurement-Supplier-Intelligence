@@ -8,10 +8,10 @@ import { Icon } from './ui'
 export interface StepCounts {
   active: number
   checklistItems: number
-  gaps: number
-  flags: number
   totalClaims: number
   pendingClaims: number
+  acceptedClaims: number
+  contradictions: number
 }
 
 interface Step {
@@ -35,8 +35,8 @@ export function PipelineStepper({
     { id: 'checklist', label: 'Checklist', cap: 'evidence to request', count: counts.checklistItems },
     { id: 'intake', label: 'Evidence Intake', cap: 'documents → claims', count: counts.totalClaims },
     { id: 'review', label: 'Claims Review', cap: 'accept / reject', count: counts.pendingClaims },
-    { id: 'data', label: 'Evidence Register', cap: 'submitted + assessed', count: counts.gaps },
-    { id: 'validation', label: 'Gaps & Validation', cap: 'gaps + threshold check', count: counts.flags },
+    { id: 'data', label: 'Evidence Register', cap: 'claims accepted', count: counts.acceptedClaims },
+    { id: 'validation', label: 'Gaps & Validation', cap: 'contradictions found', count: counts.contradictions },
   ]
   const currentIdx = steps.findIndex((s) => s.id === current)
 

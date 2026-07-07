@@ -64,6 +64,12 @@ export default function AIClaimsReview({ onNavigate }: { onNavigate?: (id: strin
   // Push targets follow the supplier filter: a specific supplier, or all with accepted claims.
   const pushTargets = (filterSup === 'all' ? [...acceptedSups] : [filterSup]).filter((id) => acceptedSups.has(id))
   const canPush = pushTargets.length > 0
+  // Label names the exact target(s) so the user sees who is affected before clicking.
+  const pushLabel = pushTargets.length === 0
+    ? 'Push accepted claims to validation'
+    : pushTargets.length === 1
+      ? `Push accepted claims for ${pushTargets[0]}`
+      : `Push accepted claims for ${pushTargets.length} suppliers (${pushTargets.join(', ')})`
   const doPush = () => {
     const fields = pushTargets.reduce((n, id) => n + pushAcceptedClaims(id), 0)
     setPushed({ suppliers: pushTargets, fields })
@@ -138,7 +144,7 @@ export default function AIClaimsReview({ onNavigate }: { onNavigate?: (id: strin
               disabled={!canPush}
               title={canPush ? 'Push accepted claims into the validation engine' : 'Accept at least one claim first'}
             >
-              <Icon name="check" size={14} /> Push accepted claims to validation
+              <Icon name="check" size={14} /> {pushLabel}
             </button>
           </div>
         </div>

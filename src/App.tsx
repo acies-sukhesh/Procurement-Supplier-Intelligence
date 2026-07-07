@@ -83,15 +83,17 @@ export default function App() {
     const fixtures = runFixtures()
     const passed = fixtures.filter((f) => f.pass).length
 
-    // Extracted-claim counts
+    // Live pipeline counts — derived only from aiExtractions (populated by runAIExtraction).
+    // Zero until a supplier has actually been run through extraction.
     const totalClaims = Object.values(aiExtractions).reduce((n, e) => n + e.claims.length, 0)
     const pendingClaims = Object.values(aiExtractions).reduce((n, e) => n + e.claims.filter((c) => c.reviewStatus === 'Pending').length, 0)
     const acceptedClaims = Object.values(aiExtractions).reduce((n, e) => n + e.claims.filter((c) => c.reviewStatus === 'Accepted').length, 0)
+    const contradictions = Object.values(aiExtractions).reduce((n, e) => n + e.contradictions.length, 0)
 
     return {
       active, flags, bestFit, checklistItems, gaps,
       fixtureText: `${passed}/${fixtures.length}`, fixtureOk: passed === fixtures.length,
-      totalClaims, pendingClaims, acceptedClaims,
+      totalClaims, pendingClaims, acceptedClaims, contradictions,
     }
   }, [result, aiExtractions])
 

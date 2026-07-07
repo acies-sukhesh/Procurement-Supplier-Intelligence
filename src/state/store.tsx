@@ -47,7 +47,15 @@ interface Store {
   // A supplier absent here evaluates directly from suppliers.json (unchanged).
   pushedClaims: Record<string, Record<string, unknown>>
   pushAcceptedClaims: (supplierId: string) => number // returns count of fields pushed
+
+  // Evidence follow-up requests per supplier (count + last-requested timestamp).
+  // A visible workflow aid only — it does not affect scoring or labels.
+  followUps: Record<string, { count: number; lastAt: string }>
+  recordFollowUp: (supplierId: string) => void
 }
+
+// Max follow-up requests before the supplier is left to be scored/labeled as-is.
+export const FOLLOWUP_LIMIT = 2
 
 const Ctx = createContext<Store | null>(null)
 
@@ -61,6 +69,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [aiExtractionRunning, setAIExtractionRunning] = useState<Record<string, boolean>>({})
   // Claim-derived value overrides pushed into validation, per supplier.
   const [pushedClaims, setPushedClaims] = useState<Record<string, Record<string, unknown>>>({})
+  // Evidence follow-up request log, per supplier.
+  const [followUps, setFollowUps] = useState<Record<string, { count: number; lastAt: string }>>({})
 
   const setContext = (patch: Partial<RequestContext>) => setContextState((c) => ({ ...c, ...patch }))
   const setWeight = (df: DFCode, value: number) =>
@@ -76,6 +86,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const values = transformAcceptedClaims(claims)
     setPushedClaims((p) => ({ ...p, [supplierId]: values }))
     return Object.keys(values).length
+  }
+
+  const recordFollowUp = (supplierId: string) => {
+    setFollowUps((f) => ({
+      ...f,
+      [supplierId]: { count: (f[supplierId]?.count ?? 0) + 1, lastAt: new Date().toISOString() },
+    }))
   }
 
   const runAIExtractionFn = async (supplierId: string) => {
@@ -148,6 +165,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     pushedClaims,
     pushAcceptedClaims,
+
+    followUps,
+    recordFollowUp,
   }
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>
 }

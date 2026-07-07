@@ -3,6 +3,7 @@
     "id": "SUP-A",
     "name": "Precision Auto Components",
     "summary": "Established Tier-1 automotive machining supplier, strong across every decision factor.",
+    "contact_email": "procurement@precision-auto.example",
     "values": {
       "process_cpk_value": 1.82,
       "equipment_oee_pct": 88,
@@ -53,6 +54,7 @@
     "id": "SUP-B",
     "name": "Meridian Engineering",
     "summary": "Strong quality and compliance record, noticeably weaker on delivery and capacity.",
+    "contact_email": "procurement@meridian-engineering.example",
     "values": {
       "process_cpk_value": 1.45,
       "equipment_oee_pct": 79,
@@ -103,6 +105,7 @@
     "id": "SUP-C",
     "name": "Apex Machining Works",
     "summary": "Moderate capability with missing mandatory evidence (PPAP, BCP) and several below-threshold quality and delivery metrics.",
+    "contact_email": "procurement@apex-machining.example",
     "values": {
       "process_cpk_value": 1.2,
       "equipment_oee_pct": 68,
@@ -153,6 +156,7 @@
     "id": "SUP-D",
     "name": "Global Forge & Precision",
     "summary": "Strong on nearly every metric, but a trade-compliance screening hit fires a critical flag regardless of the underlying score.",
+    "contact_email": "procurement@global-forge.example",
     "values": {
       "process_cpk_value": 1.68,
       "equipment_oee_pct": 84,
@@ -203,6 +207,7 @@
     "id": "SUP-E",
     "name": "Nova Castings & Machining",
     "summary": "Weak across most decision factors with several evidence gaps, and a high credit-risk rating that fires a critical flag.",
+    "contact_email": "procurement@nova-castings.example",
     "values": {
       "process_cpk_value": 1.05,
       "equipment_oee_pct": 61,
