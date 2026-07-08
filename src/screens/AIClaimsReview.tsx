@@ -1,6 +1,6 @@
 import { useMemo, useState, type CSSProperties } from 'react'
 import { useStore } from '../state/store'
-import { getDFName, getLeafFactorName } from '../engine/aiExtraction'
+import { getDFName, describeClaimMapping } from '../engine/aiExtraction'
 import { Card, Icon, Kpi, ClaimTypePill, QualityPill, ReviewStatusPill, ConfidenceBar, SUPPLIER_COLORS } from '../components/ui'
 import suppliers from '../data/suppliers.json'
 import type { AIClaim, AIClaimType, ClaimReviewStatus } from '../engine/aiTypes'
@@ -196,10 +196,7 @@ export default function AIClaimsReview({ onNavigate }: { onNavigate?: (id: strin
                     </div>
                     {claim.sourcePage && <div className="muted" style={{ fontSize: 11 }}>p.{claim.sourcePage}</div>}
                   </td>
-                  <td>
-                    <div style={{ fontSize: 12 }}>{claim.mappedDecisionFactor}</div>
-                    <div className="muted" style={{ fontSize: 11 }}>{claim.mappedLeafFactor}</div>
-                  </td>
+                  <td><FactorCell claim={claim} /></td>
                   <td><ConfidenceBar value={claim.extractionConfidence} width={70} /></td>
                   <td><QualityPill quality={claim.evidenceQuality} /></td>
                   <td><ReviewStatusPill status={claim.reviewStatus} /></td>
@@ -277,6 +274,34 @@ export default function AIClaimsReview({ onNavigate }: { onNavigate?: (id: strin
 
 const selStyle: CSSProperties = { padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border)', fontSize: 13 }
 
+// Factor column: real DF/LF codes for scored claims; a single honest "Not scored — …"
+// label for identity/context or supplementary claims (never a fabricated factor name).
+function FactorCell({ claim }: { claim: AIClaim }) {
+  const m = describeClaimMapping(claim)
+  if (!m.scored) return <div className="muted" style={{ fontSize: 11 }}>{m.notScoredLabel}</div>
+  return (
+    <>
+      <div style={{ fontSize: 12 }}>{claim.mappedDecisionFactor}</div>
+      <div className="muted" style={{ fontSize: 11 }}>{claim.mappedLeafFactor}</div>
+    </>
+  )
+}
+
+// Drawer Mapping rows: correct "DFx · name" / "LFx.y · name" for scored claims (no self-
+// duplication), or a single not-scored line otherwise.
+function MappingRows({ claim }: { claim: AIClaim }) {
+  const m = describeClaimMapping(claim)
+  if (!m.scored) {
+    return <div className="between"><span className="muted">Mapping</span><strong>{m.notScoredLabel}</strong></div>
+  }
+  return (
+    <>
+      <div className="between"><span className="muted">Decision Factor</span><strong>{m.dfLabel}</strong></div>
+      <div className="between"><span className="muted">Leaf Factor</span><strong>{m.lfLabel}</strong></div>
+    </>
+  )
+}
+
 function ClaimDrawer({ claim, onClose }: { claim: AIClaim; onClose: () => void }) {
   const { reviewClaim } = useStore()
   return (
@@ -325,8 +350,7 @@ function ClaimDrawer({ claim, onClose }: { claim: AIClaim; onClose: () => void }
 
           <div className="section-label">Mapping</div>
           <div className="col gap8" style={{ fontSize: 13 }}>
-            <div className="between"><span className="muted">Decision Factor</span><strong>{claim.mappedDecisionFactor} · {getDFName(claim.mappedDecisionFactor)}</strong></div>
-            <div className="between"><span className="muted">Leaf Factor</span><strong>{claim.mappedLeafFactor} · {getLeafFactorName(claim.mappedLeafFactor)}</strong></div>
+            <MappingRows claim={claim} />
             <div className="between"><span className="muted">Backend Field</span><span className="mono muted">{claim.backendField}</span></div>
           </div>
 

@@ -116,3 +116,28 @@ export function getDFName(dfCode: string): string {
   }
   return names[dfCode] ?? dfCode
 }
+
+// Identity/context backend fields that were never meant to enter scoring.
+const IDENTITY_FIELDS = new Set(['legal_corporate_name', 'duns_number', 'plant_address', 'quality_contact'])
+
+export interface ClaimMapping {
+  scored: boolean
+  dfLabel: string // "DF3 · Quality" (scored only)
+  lfLabel: string // "LF3.6 · PPAP & Launch Capability" (scored only)
+  notScoredLabel: string // single, honest label for non-scored claims
+}
+
+// A claim is "scored" only when it maps to a real DF1–DF7 AND a real LF code from
+// leafFactors.json whose df matches — i.e. a canonical factor the engine actually scores.
+// Everything else (identity placeholders like "Supplier Master", or a real DF paired with a
+// non-code leaf label) is informational and is labelled as not-scored, never as a fabricated factor.
+export function describeClaimMapping(claim: AIClaim): ClaimMapping {
+  const df = claim.mappedDecisionFactor
+  const lf = claim.mappedLeafFactor
+  const leaf = leafFactors.find((l) => l.code === lf)
+  const scored = /^DF[1-7]$/.test(df) && !!leaf && leaf.df === df
+  const notScoredLabel = IDENTITY_FIELDS.has(claim.backendField)
+    ? 'Not scored — supplier identity'
+    : 'Not scored — supplementary evidence'
+  return { scored, dfLabel: `${df} · ${getDFName(df)}`, lfLabel: `${lf} · ${getLeafFactorName(lf)}`, notScoredLabel }
+}

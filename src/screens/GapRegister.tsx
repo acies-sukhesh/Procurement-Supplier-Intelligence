@@ -5,16 +5,23 @@ import { buildGapRegister, gapPillClass, whyItMatters, expectedEvidenceExamples,
 import type { RequestContext } from '../engine/types'
 import suppliers from '../data/suppliers.json'
 
-// Builds a real mailto: draft (never auto-sent) listing a supplier's missing items,
+interface FollowUpDraft { to: string; subject: string; body: string }
+
+// Generates the follow-up draft (never auto-sent) listing a supplier's missing items,
 // reusing the same "why it matters" / "expected evidence" text as the Checklist.
-function buildFollowUpMailto(to: string, supplierName: string, ctx: RequestContext, rows: GapRow[]): string {
+// Content is unchanged from before — only the delivery mechanism (modal) is new.
+function buildFollowUpDraft(to: string, supplierName: string, ctx: RequestContext, rows: GapRow[]): FollowUpDraft {
   const n = rows.length
   const subject = `Evidence Request Follow-up — ${ctx.part_criticality} ${ctx.industry} part evaluation — ${n} item${n === 1 ? '' : 's'} outstanding`
   const items = rows
     .map((r, i) => `${i + 1}. ${r.name}\n   Why it matters: ${whyItMatters(r.field)}\n   Expected evidence: ${expectedEvidenceExamples(r.field).join(' / ')}`)
     .join('\n\n')
   const body = `Dear ${supplierName} team,\n\nAs part of our ${ctx.part_criticality} ${ctx.industry} sourcing evaluation, the following evidence items are still outstanding:\n\n${items}\n\nPlease provide the above documentation at your earliest convenience so we can complete the assessment.\n\nRegards,\nProcurement Team`
-  return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+  return { to, subject, body }
+}
+
+function draftToMailto(d: FollowUpDraft): string {
+  return `mailto:${d.to}?subject=${encodeURIComponent(d.subject)}&body=${encodeURIComponent(d.body)}`
 }
 
 // Focused lens: only Weak + Missing evidence items across all suppliers,
@@ -27,6 +34,7 @@ export function GapRegisterSection() {
 
   const missing = rows.filter((r) => r.gapState === 'Missing').length
   const weak = rows.length - missing
+  const [draftModal, setDraftModal] = useState<FollowUpDraft | null>(null)
 
   // Missing items grouped per supplier (drives the one-supplier-at-a-time follow-up action).
   const missingBySupplier = useMemo(() => {
@@ -116,26 +124,74 @@ export function GapRegisterSection() {
                       {reached ? (
                         <span className="pill watch">Follow-up limit reached — this supplier will be scored and labeled as-is.</span>
                       ) : sup?.contact_email ? (
-                        <a
+                        <button
                           className="bulk-btn"
-                          style={{ textDecoration: 'none' }}
-                          href={buildFollowUpMailto(sup.contact_email, sup.name, ctx, mrows)}
-                          onClick={() => recordFollowUp(sid)}
+                          onClick={() => {
+                            // Count increments when the draft is generated/viewed (modal open).
+                            recordFollowUp(sid)
+                            setDraftModal(buildFollowUpDraft(sup.contact_email, sup.name, ctx, mrows))
+                          }}
                         >
                           <Icon name="flag" size={13} /> Draft follow-up email for {sid} ({mrows.length})
-                        </a>
+                        </button>
                       ) : null}
                     </div>
                   )
                 })}
               </div>
               <p className="muted" style={{ fontSize: 11, marginTop: 8 }}>
-                Opens a pre-filled draft in your email client — nothing is sent automatically.
+                Opens a pre-filled draft you can copy — nothing is sent automatically.
               </p>
             </div>
           )}
         </>
       )}
+      {draftModal && <FollowUpDraftModal draft={draftModal} onClose={() => setDraftModal(null)} />}
     </Card>
+  )
+}
+
+function FollowUpDraftModal({ draft, onClose }: { draft: FollowUpDraft; onClose: () => void }) {
+  const [copied, setCopied] = useState(false)
+  const fullText = `To: ${draft.to}\nSubject: ${draft.subject}\nBody:\n${draft.body}`
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(fullText)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard API unavailable (e.g. insecure context) — leave state unchanged.
+    }
+  }
+  return (
+    <div className="edit-modal-scrim" onClick={onClose}>
+      <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="edit-modal-head">
+          <h3 style={{ fontSize: 16 }}>Follow-up email draft</h3>
+          <button className="icon-btn" onClick={onClose}><Icon name="close" /></button>
+        </div>
+        <div className="edit-modal-body">
+          <div className="col gap8">
+            <div>
+              <div className="section-label" style={{ margin: '0 0 4px' }}>To</div>
+              <div className="mono">{draft.to}</div>
+            </div>
+            <div>
+              <div className="section-label" style={{ margin: '10px 0 4px' }}>Subject</div>
+              <div style={{ fontSize: 13 }}>{draft.subject}</div>
+            </div>
+            <div>
+              <div className="section-label" style={{ margin: '10px 0 4px' }}>Body</div>
+              <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', fontSize: 12.5, background: 'var(--panel-soft)', padding: '10px 12px', borderRadius: 8, margin: 0, color: 'var(--ink)' }}>{draft.body}</pre>
+            </div>
+          </div>
+        </div>
+        <div className="edit-modal-foot">
+          <a className="chip-btn" style={{ textDecoration: 'none', marginRight: 'auto' }} href={draftToMailto(draft)}>Open in email client</a>
+          <button className="bulk-btn" onClick={onClose}>Close</button>
+          <button className="bulk-btn primary" onClick={copy}>{copied ? '✓ Copied' : 'Copy to clipboard'}</button>
+        </div>
+      </div>
+    </div>
   )
 }
