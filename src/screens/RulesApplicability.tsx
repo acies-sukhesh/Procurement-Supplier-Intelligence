@@ -2,38 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../state/store'
 import decisionFactors from '../data/decisionFactors.json'
 import { ApplicabilityPill, Card, Icon, Kpi } from '../components/ui'
-import type { ApplicabilityStatus, BaseStatus, DFCode, FactorApplicability } from '../engine/types'
-
-type ChangeKind = 'same' | 'upgraded' | 'excluded' | 'transition'
-
-// Distinguishes the three meaningful ways Base and Status diverge (plus a neutral
-// transition for the remaining, rarer resolutions). Never treats exclusion as escalation.
-function classifyChange(base: BaseStatus, status: ApplicabilityStatus): ChangeKind {
-  if (status === 'Not Applicable') return 'excluded' // Not Applicable If — exclusion, never an upgrade
-  if (base === 'Optional' && status === 'Mandatory') return 'upgraded' // Criticality/Strategy upgrade
-  if (base === status) return 'same'
-  if (base === 'Conditional' && status === 'Conditional Active') return 'same' // trigger simply resolved active
-  return 'transition' // e.g. Conditional → Mandatory, Optional → Conditional Active
-}
-
-const BASE_CLASS: Record<BaseStatus, string> = { Mandatory: 'mandatory', Optional: 'optional', Conditional: 'conditional' }
-
-// Combined Base → Status cell. Single badge when nothing meaningful changed; an accent
-// "Upgraded" transition for Optional→Mandatory; a muted/grey "Excluded" transition for
-// anything sent to Not Applicable — the visual opposite of an upgrade.
-function BaseStatusCell({ base, status }: { base: BaseStatus; status: ApplicabilityStatus }) {
-  const kind = classifyChange(base, status)
-  if (kind === 'same') return <ApplicabilityPill status={status} />
-  return (
-    <span className="flex center gap8 wrap">
-      <span className={`pill ${BASE_CLASS[base]}`}>{base}</span>
-      <span className="muted">→</span>
-      <ApplicabilityPill status={status} />
-      {kind === 'upgraded' && <span className="pill conditional">Upgraded</span>}
-      {kind === 'excluded' && <span className="pill na">Excluded</span>}
-    </span>
-  )
-}
+import type { DFCode, FactorApplicability } from '../engine/types'
 
 export default function RulesApplicability() {
   const { result } = useStore()
@@ -42,8 +11,6 @@ export default function RulesApplicability() {
   const [selected, setSelected] = useState<FactorApplicability | null>(null)
 
   const count = (s: string) => app.filter((a) => a.status === s).length
-  const upgraded = app.filter((a) => classifyChange(a.base, a.status) === 'upgraded').length
-  const excluded = app.filter((a) => a.status === 'Not Applicable').length
 
   return (
     <div className="col gap16">
@@ -53,13 +20,6 @@ export default function RulesApplicability() {
         <Kpi num={count('Optional')} label="Optional" />
         <Kpi num={count('Not Applicable')} label="Not Applicable" />
         <Kpi num={43 - count('Not Applicable')} label="In-scope (denominator)" />
-      </div>
-
-      <div className="muted" style={{ fontSize: 13 }}>
-        <strong style={{ color: 'var(--accent-dark)' }}>{upgraded} factor{upgraded === 1 ? '' : 's'} upgraded</strong>
-        {' '}·{' '}
-        <strong style={{ color: 'var(--steel)' }}>{excluded} factor{excluded === 1 ? '' : 's'} excluded</strong>
-        {' '}by criticality, strategy, or part context for this evaluation.
       </div>
 
       {decisionFactors.map((df) => {
@@ -77,25 +37,34 @@ export default function RulesApplicability() {
             {isOpen && (
               <div className="table-wrap">
                 <table className="data">
-                  <thead><tr><th>Code</th><th>Leaf factor</th><th>Canonical field</th><th>Base → Status</th><th></th></tr></thead>
+                  <thead><tr><th>Code</th><th>Leaf factor</th><th>Canonical field</th><th>Base</th><th>Status</th><th></th></tr></thead>
                   <tbody>
                     {rows.map((r) => {
-                      const kind = classifyChange(r.base, r.status)
+                      const isUpgraded = r.status === 'Mandatory' && r.base !== 'Mandatory'
+                      const isNa = r.status === 'Not Applicable'
                       return (
                         <tr
                           key={r.code}
-                          className={`row-clickable ${kind === 'excluded' ? 'na-row' : ''}`}
-                          style={kind === 'upgraded' ? { background: 'var(--accent-soft)' } : undefined}
+                          className={`row-clickable ${isNa ? 'na-row' : ''} ${isUpgraded ? 'row-upgraded' : ''}`}
                           onClick={() => setSelected(r)}
                         >
-                          <td className="mono muted">{r.code}</td>
-                          <td><strong style={{ fontWeight: 600 }}>{r.name}</strong></td>
-                          <td className="mono muted">{r.field}</td>
-                          <td><BaseStatusCell base={r.base} status={r.status} /></td>
-                          <td><span className="muted" style={{ fontSize: 11 }}>trace ›</span></td>
-                        </tr>
-                      )
-                    })}
+                        <td className="mono muted">{r.code}</td>
+                        <td><strong style={{ fontWeight: 600 }}>{r.name}</strong></td>
+                        <td className="mono muted">{r.field}</td>
+                        <td className="muted">{r.base}</td>
+                        <td>
+                          <ApplicabilityPill status={r.status} />
+                          {r.status === 'Not Applicable' && (
+                            <div style={{ fontSize: 11, color: 'var(--na)', marginTop: 2 }}>— excluded</div>
+                          )}
+                          {r.status === 'Mandatory' && r.base !== 'Mandatory' && (
+                            <div style={{ fontSize: 11, color: 'var(--pass)', marginTop: 2 }}>↑ from {r.base}</div>
+                          )}
+                        </td>
+                        <td><span className="muted" style={{ fontSize: 11 }}>trace ›</span></td>
+                      </tr>
+                    )
+                  })}
                   </tbody>
                 </table>
               </div>
