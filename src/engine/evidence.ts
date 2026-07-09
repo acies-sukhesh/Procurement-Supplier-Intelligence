@@ -23,8 +23,8 @@ import type { ApplicabilityStatus, DFCode, EvaluationResult, FactorApplicability
 import metrics from '../data/metrics.json'
 
 export const SIM_NOTE =
-  'Simulated evidence layer — claim type, confidence and source references are illustrative for this prototype. ' +
-  'No real document extraction (OCR/NLP) is performed; the underlying supplier values and scoring are unchanged.'
+  '' +
+  ''
 
 export type EvidenceSourceType = 'Request from supplier' | 'Buyer records' | 'Public records'
 export type ClaimType = 'Explicit' | 'Absent'

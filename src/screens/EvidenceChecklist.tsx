@@ -188,7 +188,6 @@ export function SimBanner() {
         alignItems: 'flex-start',
       }}
     >
-      <span style={{ fontWeight: 700 }}>Simulated</span>
       <span>{SIM_NOTE}</span>
     </div>
   )
