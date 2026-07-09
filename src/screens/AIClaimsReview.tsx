@@ -78,10 +78,6 @@ export default function AIClaimsReview({ onNavigate }: { onNavigate?: (id: strin
   if (allClaims.length === 0) {
     return (
       <div className="col gap16">
-        <div className="info-banner">
-          <strong>Extracted Claims Review</strong>
-          <span>No extraction has been run yet. Go to <strong>Evidence Intake</strong> and run extraction first — the extracted claims will appear here for review.</span>
-        </div>
       </div>
     )
   }

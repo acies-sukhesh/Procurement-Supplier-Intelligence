@@ -56,18 +56,18 @@ const NAV: NavGroup[] = [
 ]
 
 const TITLES: Record<ScreenId, { title: string; sub: string }> = {
-  request: { title: 'Evaluation Request', sub: 'Configure the part requirement and sourcing context. Applicable factors are derived live as you change inputs.' },
-  rules: { title: 'Rules & Applicability', sub: 'How each of the 43 leaf factors resolves under the current request, with a full reason trace per factor.' },
-  checklist: { title: 'Evidence Checklist', sub: 'Simulated: the evidence to request per applicable factor, grouped by source. A presentation layer before the threshold check — no real extraction.' },
-  intake: { title: 'Evidence Intake', sub: 'Upload supplier documents and run automated extraction to identify evidence claims, then classify and map them to factors. Simulated for this prototype — no scoring decisions are automated.' },
-  review: { title: 'Extracted Claims Review', sub: 'Review each extracted evidence claim. Accept, reject, or edit before it enters the validation engine.' },
-  dictionary: { title: 'Metric Dictionary', sub: 'Reference for every canonical field: semantic type, direction, threshold bands, and required evidence.' },
-  data: { title: 'Evidence Register', sub: 'Simulated: submitted values with an illustrative claim type, confidence, source reference and gap state per supplier × factor.' },
-  validation: { title: 'Validation', sub: 'Each supplier value validated against its threshold rule — pass, watch, evidence gap, or critical flag.' },
-  aggregation: { title: 'Aggregation & Readiness', sub: 'Decision-factor roll-up and weighted supplier readiness, with the denominator shown explicitly.' },
-  comparison: { title: 'Supplier Comparison', sub: 'Comparative supplier readiness recommendation with relative TOPSIS ranking — never a final approval.' },
-  scenario: { title: 'Scenario Impact', sub: 'Compare the current request against a saved baseline to see how applicability and readiness shift.' },
-  summary: { title: 'Prototype Summary', sub: 'Fixture verification, scope, and assumptions for this configurable evaluation prototype.' },
+  request: { title: 'Evaluation Request', sub: '' },
+  rules: { title: 'Rules & Applicability', sub: '' },
+  checklist: { title: 'Evidence Checklist', sub: ''},
+  intake: { title: 'Evidence Intake', sub: '' },
+  review: { title: 'Extracted Claims Review', sub: '' },
+  dictionary: { title: 'Metric Dictionary', sub: '' },
+  data: { title: 'Evidence Register', sub: '' },
+  validation: { title: 'Validation', sub: '' },
+  aggregation: { title: 'Aggregation & Readiness', sub: '' },
+  comparison: { title: 'Supplier Comparison', sub: '' },
+  scenario: { title: 'Scenario Impact', sub: '' },
+  summary: { title: 'Prototype Summary', sub: '' },
 }
 
 export default function App() {
@@ -120,7 +120,6 @@ export default function App() {
             <div className="brand-mark">S</div>
             <div className="brand-title">Supplier<br />Evaluation Engine</div>
           </div>
-          <div className="brand-sub">Framework: 7 Decision Factors · 43 Leaf Factors</div>
         </div>
         {NAV.map((group) => (
           <div className="nav-group" key={group.label}>

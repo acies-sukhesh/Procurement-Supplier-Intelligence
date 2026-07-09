@@ -22,12 +22,6 @@ export default function AIEvidenceIntake() {
   return (
     <div className="col gap16">
       <div className="info-banner">
-        <strong>Evidence Intake</strong>
-        <span>
-          Supplier documents are classified and their evidence claims extracted, then mapped to evaluation factors.
-          Automated extraction is simulated here for demo stability — it makes no scoring or approval decisions, and
-          only human-accepted claims flow into validation.
-        </span>
       </div>
 
       <div className="kpi-row">
