@@ -4,6 +4,7 @@ import type { AIClaim, AIExtractionResult, ClaimReviewStatus, Contradiction } fr
 import { evaluate, getStrategy, getWeights } from '../engine/evaluate'
 import { runFullExtraction } from '../engine/aiExtraction'
 import { transformAcceptedClaims } from '../engine/claimTransformer'
+import { COMPONENT_PRESETS } from '../data/componentPresets'
 
 export const DEFAULT_CONTEXT: RequestContext = {
   industry: 'Automotive',
@@ -69,6 +70,18 @@ interface Store {
   saveScenario: (name: string) => void
   deleteScenario: (id: string) => void
   loadScenario: (id: string) => void
+
+  // Front-end-only gate flow: manufacturer login, use case, and component
+  // selection. None of this feeds evaluate() directly — selectedComponent
+  // applies its defaults via the existing setContext() as a convenience only.
+  authed: boolean
+  manufacturerName: string | null
+  login: (name: string) => void
+  logout: () => void
+  useCaseId: string | null
+  setUseCaseId: (id: string) => void
+  componentId: string | null
+  setComponentId: (id: string) => void
 }
 
 // Max follow-up requests before the supplier is left to be scored/labeled as-is.
@@ -94,6 +107,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   // Saved scenarios — in-memory only, session-only (lost on page refresh, by design).
   const [savedScenarios, setSavedScenariosState] = useState<SavedScenario[]>([])
+
+  // Gate flow: login, use case, component — front-end-only, session-only.
+  const [authed, setAuthed] = useState(false)
+  const [manufacturerName, setManufacturerName] = useState<string | null>(null)
+  const [useCaseId, setUseCaseIdState] = useState<string | null>(null)
+  const [componentId, setComponentIdState] = useState<string | null>(null)
 
   const setContext = (patch: Partial<RequestContext>) => setContextState((c) => ({ ...c, ...patch }))
   const setWeight = (df: DFCode, value: number) =>
@@ -197,6 +216,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setUserSelectionsState(s.userSelections)
   }
 
+  // ── Gate flow ───────────────────────────────────────────────────────
+
+  const setComponentId = (id: string) => {
+    setComponentIdState(id)
+    const preset = COMPONENT_PRESETS.find((p) => p.id === id)
+    if (preset) setContext(preset.defaults)
+  }
+
   const store: Store = {
     context,
     setContext,
@@ -228,6 +255,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     saveScenario,
     deleteScenario,
     loadScenario: loadScenarioFn,
+
+    authed,
+    manufacturerName,
+    login: (name: string) => { setManufacturerName(name); setAuthed(true) },
+    logout: () => { setAuthed(false); setManufacturerName(null); setUseCaseIdState(null); setComponentIdState(null) },
+    useCaseId,
+    setUseCaseId: setUseCaseIdState,
+    componentId,
+    setComponentId,
   }
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>
 }
