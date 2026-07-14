@@ -107,7 +107,19 @@ export default function ApplicabilityTab({ onNavigate }: { onNavigate?: (id: str
           </Stack>
         </SectionCard>
       )}
-
+              <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+          <TextField
+            size="small"
+            fullWidth
+            placeholder="Name this scenario, e.g. Quality Focus"
+            value={scenarioName}
+            onChange={(e) => setScenarioName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSaveScenario()}
+          />
+          <Button variant="contained" onClick={handleSaveScenario} disabled={!scenarioName.trim() || savedFlash}>
+            {savedFlash ? 'Saved ✓' : 'Save as Scenario'}
+          </Button>
+        </Stack>
       {decisionFactors.map((df) => {
         const rows = app.filter((a) => a.df === (df.code as DFCode))
         const dfActive = rows.filter((r) => r.includedInEvaluation).length
@@ -132,7 +144,6 @@ export default function ApplicabilityTab({ onNavigate }: { onNavigate?: (id: str
                 <TableBody>
                   {rows.map((r) => {
                     const isUpgraded = r.ruleStatus === 'Mandatory' && r.base !== 'Mandatory'
-                    const selInfo = SELECTION_LABELS[r.selectionType]
                     return (
                       <TableRow key={r.code} hover sx={{ cursor: 'pointer' }} onClick={() => setSelected(r)}>
                         <TableCell>
@@ -145,7 +156,7 @@ export default function ApplicabilityTab({ onNavigate }: { onNavigate?: (id: str
                         </TableCell>
                         <TableCell onClick={(e) => e.stopPropagation()}>
                           {r.locked ? (
-                            <StatusBadge tone={selInfo.tone} label={selInfo.label} icon={selInfo.tone === 'locked'} />
+                            <StatusBadge tone="locked" label="Locked by policy" icon />
                           ) : (
                             <Stack direction="row" alignItems="center">
                               <Checkbox
@@ -188,19 +199,6 @@ export default function ApplicabilityTab({ onNavigate }: { onNavigate?: (id: str
               </Stack>
             )
           })}
-        </Stack>
-        <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-          <TextField
-            size="small"
-            fullWidth
-            placeholder="Name this scenario, e.g. Quality Focus"
-            value={scenarioName}
-            onChange={(e) => setScenarioName(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSaveScenario()}
-          />
-          <Button variant="contained" onClick={handleSaveScenario} disabled={!scenarioName.trim() || savedFlash}>
-            {savedFlash ? 'Saved ✓' : 'Save as Scenario'}
-          </Button>
         </Stack>
         <Button size="small" sx={{ mt: 1 }} onClick={() => onNavigate?.('scenario')}>
           Go to Scenario Comparison to compare saved scenarios →

@@ -206,7 +206,7 @@ export default function SupplierComparison({ onNavigate }: { onNavigate?: (id: s
                     const v = d.score ?? 0
                     return (
                       <Stack key={d.df} direction="row" spacing={1.25} alignItems="center">
-                        <Typography variant="caption" fontWeight={700} sx={{ width: 32, flexShrink: 0 }}>{d.df.replace('DF', '')}</Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ width: 72, flexShrink: 0 }}>{dfShort(d.df)}</Typography>
                         <LinearProgress
                           variant="determinate"
                           value={d.score === null ? 0 : v * 100}
@@ -223,7 +223,7 @@ export default function SupplierComparison({ onNavigate }: { onNavigate?: (id: s
                   })}
                 </Stack>
                 <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                  Bar length = DF score · label = decision factor
+                  Bar length = decision-factor score
                 </Typography>
               </SectionCard>
             </Grid>

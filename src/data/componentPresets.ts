@@ -59,16 +59,4 @@ export const COMPONENT_PRESETS: ComponentPresetDef[] = [
       special_process_required: 'Yes',
     },
   },
-  {
-    id: 'pcb-assembly',
-    name: 'PCB Assembly',
-    description: 'Populated circuit board for a control module.',
-    defaults: {
-      industry: 'Electronics',
-      part_criticality: 'High',
-      process_type: 'Assembly',
-      production_intent: 'Yes',
-      special_process_required: 'No',
-    },
-  },
 ]
