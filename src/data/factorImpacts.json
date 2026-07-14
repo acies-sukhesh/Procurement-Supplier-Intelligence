@@ -1,0 +1,52 @@
+{
+  "_comment": "Dedicated risk blind-spot descriptions per leaf factor. Used by the Impact Analyzer to explain what risk area is unmonitored when a factor is excluded from evaluation. Separated from applicabilityRules naText which describes the exclusion reason, not the risk.",
+  "LF1.1": { "riskBlindSpot": "Unverified manufacturing process capability — defective parts may reach production" },
+  "LF1.2": { "riskBlindSpot": "Equipment efficiency unknown — production bottleneck risk undetected" },
+  "LF1.3": { "riskBlindSpot": "Material grade/certification gap — non-conforming material may enter supply chain" },
+  "LF1.4": { "riskBlindSpot": "Tolerance capability unverified — dimensional non-conformance risk" },
+  "LF1.5": { "riskBlindSpot": "Special process qualification unknown — welding/heat-treat/plating quality unassured" },
+  "LF1.6": { "riskBlindSpot": "Engineering capability gap — design support and problem-solving capacity unknown" },
+  "LF1.7": { "riskBlindSpot": "No similar part track record — first-time production risk unquantified" },
+  "LF1.8": { "riskBlindSpot": "Industry experience unknown — domain-specific compliance knowledge unverified" },
+
+  "LF2.1": { "riskBlindSpot": "Installed capacity unknown — ability to meet volume requirements unconfirmed" },
+  "LF2.2": { "riskBlindSpot": "Available capacity headroom unknown — risk of allocation shortage" },
+  "LF2.3": { "riskBlindSpot": "Ramp-up capability unverified — launch delay risk during volume increase" },
+  "LF2.4": { "riskBlindSpot": "Customer concentration risk unmeasured — supplier dependency on single buyer unknown" },
+  "LF2.5": { "riskBlindSpot": "Peak demand flexibility unknown — surge/seasonal demand risk unaddressed" },
+
+  "LF3.1": { "riskBlindSpot": "QMS certification status unknown — systemic quality management gap" },
+  "LF3.2": { "riskBlindSpot": "SPC deployment unknown — in-process variation uncontrolled" },
+  "LF3.3": { "riskBlindSpot": "Measurement system capability unverified — inspection data reliability unknown" },
+  "LF3.4": { "riskBlindSpot": "CAPA closure performance unknown — recurring quality issues may persist" },
+  "LF3.5": { "riskBlindSpot": "Quality history (PPM) not assessed — defect trend and supplier track record invisible" },
+  "LF3.6": { "riskBlindSpot": "PPAP/launch readiness unknown — part approval status unconfirmed" },
+
+  "LF4.1": { "riskBlindSpot": "On-time delivery history unknown — supply disruption risk unquantified" },
+  "LF4.2": { "riskBlindSpot": "Lead time reliability unmeasured — planning buffer accuracy unknown" },
+  "LF4.3": { "riskBlindSpot": "Logistics capability gap — shipping/customs delay risk unaddressed" },
+  "LF4.4": { "riskBlindSpot": "Production scheduling adherence unknown — line-stop risk from poor planning" },
+  "LF4.5": { "riskBlindSpot": "Buffer/safety stock policy unknown — supply interruption resilience unverified" },
+  "LF4.6": { "riskBlindSpot": "Order flexibility unknown — inability to respond to demand changes" },
+
+  "LF5.1": { "riskBlindSpot": "Liquidity position unknown — supplier cash-flow risk unmonitored" },
+  "LF5.2": { "riskBlindSpot": "Leverage/solvency unknown — over-leveraged supplier risk invisible" },
+  "LF5.3": { "riskBlindSpot": "Profitability trend unknown — long-term viability risk unassessed" },
+  "LF5.4": { "riskBlindSpot": "Revenue scale unknown — size mismatch and dependency risk invisible" },
+  "LF5.5": { "riskBlindSpot": "Financial distress signals not screened — insolvency risk undetected" },
+  "LF5.6": { "riskBlindSpot": "Insurance coverage gap — liability exposure in case of incident" },
+
+  "LF6.1": { "riskBlindSpot": "Regulatory compliance unverified — legal/regulatory penalty exposure" },
+  "LF6.2": { "riskBlindSpot": "Trade compliance not screened — sanctions/export control violation risk" },
+  "LF6.3": { "riskBlindSpot": "Anti-bribery controls unknown — ABAC compliance gap" },
+  "LF6.4": { "riskBlindSpot": "ESG performance unknown — sustainability and reputational risk" },
+  "LF6.5": { "riskBlindSpot": "Data security/IP protection unverified — intellectual property leak risk" },
+  "LF6.6": { "riskBlindSpot": "Ethical sourcing status unknown — human rights and supply chain ethics risk" },
+
+  "LF7.1": { "riskBlindSpot": "Single-source concentration risk unmeasured — supply chain vulnerability" },
+  "LF7.2": { "riskBlindSpot": "Geopolitical risk not assessed — regional instability exposure unknown" },
+  "LF7.3": { "riskBlindSpot": "Sub-tier dependency unknown — hidden supply chain fragility" },
+  "LF7.4": { "riskBlindSpot": "Business continuity plan unknown — disaster recovery capability unverified" },
+  "LF7.5": { "riskBlindSpot": "Ownership stability unknown — M&A or distress-driven disruption risk" },
+  "LF7.6": { "riskBlindSpot": "Capacity redundancy unknown — no backup if primary site fails" }
+}

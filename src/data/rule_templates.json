@@ -1,0 +1,435 @@
+{
+  "_comment": "MOCK policy template for the Rule Configuration screen. recommendationType reflects the engine’s reference-context (Automotive / High) classification; threshold and dataSource are sourced from metrics.json. Illustrative only — the live engine computes applicability per request context.",
+  "activeTemplateId": "auto-safety-v1",
+  "templates": [
+    {
+      "id": "auto-safety-v1",
+      "name": "Automotive Safety-Critical Sourcing Policy",
+      "version": "1.0",
+      "status": "Active",
+      "uploadedBy": "j.rivera@oem.example (Admin)",
+      "uploadedAt": "2026-06-14",
+      "appliesTo": {
+        "industry": "Automotive",
+        "criticality": "Safety Critical / High",
+        "productionIntent": "Yes"
+      },
+      "hierarchy": [
+        {
+          "level": "Company",
+          "scope": "All group suppliers",
+          "example": "Every production supplier must hold a valid QMS certificate (ISO 9001 minimum)."
+        },
+        {
+          "level": "Business unit / plant",
+          "scope": "Powertrain — Plant 04",
+          "example": "Machined powertrain parts require IATF 16949 certification."
+        },
+        {
+          "level": "Product family",
+          "scope": "Braking systems",
+          "example": "Safety-critical castings require an approved PPAP submission."
+        },
+        {
+          "level": "Product",
+          "scope": "Front brake caliper",
+          "example": "Process capability Cpk ≥ 1.67 on all critical characteristics."
+        },
+        {
+          "level": "Part / line-item",
+          "scope": "P/N BRK-4471",
+          "example": "Trade-compliance screening must be Clear before any PO release."
+        }
+      ],
+      "factorRules": [
+        {
+          "code": "LF1.1",
+          "df": "DF1",
+          "name": "Process Capability",
+          "field": "process_cpk_value",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 1.67 Cpk",
+          "dataSource": "Process capability study (Cpk)"
+        },
+        {
+          "code": "LF1.2",
+          "df": "DF1",
+          "name": "Equipment Capability (OEE)",
+          "field": "equipment_oee_pct",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 80 %",
+          "dataSource": "OEE report"
+        },
+        {
+          "code": "LF1.3",
+          "df": "DF1",
+          "name": "Material Capability",
+          "field": "material_capability_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Certified, Approved",
+          "dataSource": "Material certifications / approvals"
+        },
+        {
+          "code": "LF1.4",
+          "df": "DF1",
+          "name": "Tolerance & Precision Capability",
+          "field": "tolerance_capability_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Capable, Meets Spec",
+          "dataSource": "Dimensional / tolerance study"
+        },
+        {
+          "code": "LF1.5",
+          "df": "DF1",
+          "name": "Special Process Capability",
+          "field": "special_process_capability_status",
+          "recommendationType": "Not Applicable",
+          "threshold": "One of: Qualified, Certified",
+          "dataSource": "Special-process qualification (e.g. Nadcap)"
+        },
+        {
+          "code": "LF1.6",
+          "df": "DF1",
+          "name": "Engineering Capability",
+          "field": "engineering_capability_level",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Full, Advanced",
+          "dataSource": "Engineering / design capability profile"
+        },
+        {
+          "code": "LF1.7",
+          "df": "DF1",
+          "name": "Similar Part Experience",
+          "field": "similar_part_experience_count",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 3 programs",
+          "dataSource": "Reference list of comparable parts"
+        },
+        {
+          "code": "LF1.8",
+          "df": "DF1",
+          "name": "Industry & Domain Experience",
+          "field": "automotive_experience_years",
+          "recommendationType": "System Recommended",
+          "threshold": "≥ 5 years",
+          "dataSource": "Domain / industry track record"
+        },
+        {
+          "code": "LF2.1",
+          "df": "DF2",
+          "name": "Installed Capacity",
+          "field": "installed_capacity_units_month",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 1.2× monthly demand",
+          "dataSource": "Installed capacity statement"
+        },
+        {
+          "code": "LF2.2",
+          "df": "DF2",
+          "name": "Available Capacity",
+          "field": "available_capacity_units_month",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 1.2× monthly demand",
+          "dataSource": "Available capacity / free headroom"
+        },
+        {
+          "code": "LF2.3",
+          "df": "DF2",
+          "name": "Scalability & Ramp Capability",
+          "field": "ramp_up_leadtime_weeks",
+          "recommendationType": "System Recommended",
+          "threshold": "≤ 6 weeks",
+          "dataSource": "Ramp-up / scalability plan"
+        },
+        {
+          "code": "LF2.4",
+          "df": "DF2",
+          "name": "Customer Concentration Risk",
+          "field": "top_customer_revenue_share_pct",
+          "recommendationType": "Required by Policy",
+          "threshold": "≤ 30 %",
+          "dataSource": "Customer concentration disclosure"
+        },
+        {
+          "code": "LF2.5",
+          "df": "DF2",
+          "name": "Peak Demand & Flexibility",
+          "field": "surge_capacity_pct",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 20 %",
+          "dataSource": "Surge / peak flexibility statement"
+        },
+        {
+          "code": "LF3.1",
+          "df": "DF3",
+          "name": "QMS Certification",
+          "field": "iatf_cert_expiry_date",
+          "recommendationType": "Required by Policy",
+          "threshold": "Valid ≥ 30 days past eval date",
+          "dataSource": "IATF / ISO / AS9100 / ISO13485 certificate"
+        },
+        {
+          "code": "LF3.2",
+          "df": "DF3",
+          "name": "SPC & In-Process Quality",
+          "field": "spc_deployment_level",
+          "recommendationType": "System Recommended",
+          "threshold": "One of: Full, Advanced",
+          "dataSource": "SPC deployment evidence"
+        },
+        {
+          "code": "LF3.3",
+          "df": "DF3",
+          "name": "Inspection & Measurement (GR&R)",
+          "field": "msa_grr_pct",
+          "recommendationType": "Required by Policy",
+          "threshold": "≤ 10 %",
+          "dataSource": "MSA / Gage R&R study"
+        },
+        {
+          "code": "LF3.4",
+          "df": "DF3",
+          "name": "Nonconformance Management (CAPA)",
+          "field": "capa_closure_rate_pct",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 95 %",
+          "dataSource": "CAPA closure records"
+        },
+        {
+          "code": "LF3.5",
+          "df": "DF3",
+          "name": "Supplier Quality History (PPM)",
+          "field": "quality_ppm",
+          "recommendationType": "Required by Policy",
+          "threshold": "≤ 50 PPM",
+          "dataSource": "Historical defect PPM"
+        },
+        {
+          "code": "LF3.6",
+          "df": "DF3",
+          "name": "PPAP & Launch Capability",
+          "field": "ppap_approval_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Approved",
+          "dataSource": "PPAP submission / approval"
+        },
+        {
+          "code": "LF4.1",
+          "df": "DF4",
+          "name": "On-Time Delivery Performance",
+          "field": "on_time_delivery_pct",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 98 %",
+          "dataSource": "On-time delivery history"
+        },
+        {
+          "code": "LF4.2",
+          "df": "DF4",
+          "name": "Lead Time Reliability",
+          "field": "lead_time_days",
+          "recommendationType": "Required by Policy",
+          "threshold": "≤ 30 days",
+          "dataSource": "Quoted / historical lead time"
+        },
+        {
+          "code": "LF4.3",
+          "df": "DF4",
+          "name": "Logistics & Shipping Capability",
+          "field": "logistics_capability_status",
+          "recommendationType": "System Recommended",
+          "threshold": "One of: Full, Established",
+          "dataSource": "Logistics / shipping capability"
+        },
+        {
+          "code": "LF4.4",
+          "df": "DF4",
+          "name": "Production Planning & Scheduling",
+          "field": "schedule_adherence_pct",
+          "recommendationType": "System Recommended",
+          "threshold": "≥ 95 %",
+          "dataSource": "Schedule adherence records"
+        },
+        {
+          "code": "LF4.5",
+          "df": "DF4",
+          "name": "Inventory & Buffer Management",
+          "field": "buffer_stock_days",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 10 days",
+          "dataSource": "Buffer / safety-stock policy"
+        },
+        {
+          "code": "LF4.6",
+          "df": "DF4",
+          "name": "Flexibility & Responsiveness",
+          "field": "order_flexibility_level",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: High, Flexible",
+          "dataSource": "Order flexibility / responsiveness"
+        },
+        {
+          "code": "LF5.1",
+          "df": "DF5",
+          "name": "Liquidity (Current Ratio)",
+          "field": "current_ratio",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 1.2 ratio",
+          "dataSource": "Current assets / current liabilities"
+        },
+        {
+          "code": "LF5.2",
+          "df": "DF5",
+          "name": "Solvency & Leverage",
+          "field": "debt_to_equity_ratio",
+          "recommendationType": "Required by Policy",
+          "threshold": "≤ 1.5 ratio",
+          "dataSource": "Debt / equity"
+        },
+        {
+          "code": "LF5.3",
+          "df": "DF5",
+          "name": "Profitability & Cash Flow",
+          "field": "operating_margin_pct",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 8 %",
+          "dataSource": "Operating margin"
+        },
+        {
+          "code": "LF5.4",
+          "df": "DF5",
+          "name": "Revenue Scale & Stability",
+          "field": "annual_revenue_amount",
+          "recommendationType": "Required by Policy",
+          "threshold": "≥ 5,00,00,000 USD",
+          "dataSource": "Annual revenue"
+        },
+        {
+          "code": "LF5.5",
+          "df": "DF5",
+          "name": "Financial Distress Signals",
+          "field": "credit_risk_rating",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Low",
+          "dataSource": "Third-party credit rating"
+        },
+        {
+          "code": "LF5.6",
+          "df": "DF5",
+          "name": "Insurance & Financial Risk Coverage",
+          "field": "insurance_coverage_status",
+          "recommendationType": "Not Applicable",
+          "threshold": "One of: Adequate, In Place, Compliant",
+          "dataSource": "Certificate of insurance"
+        },
+        {
+          "code": "LF6.1",
+          "df": "DF6",
+          "name": "Regulatory & Legal Compliance",
+          "field": "regulatory_compliance_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Compliant",
+          "dataSource": "Regulatory / legal compliance attestation"
+        },
+        {
+          "code": "LF6.2",
+          "df": "DF6",
+          "name": "Trade & Export Compliance",
+          "field": "trade_compliance_screening_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Clear",
+          "dataSource": "Denied-party / export screening"
+        },
+        {
+          "code": "LF6.3",
+          "df": "DF6",
+          "name": "Anti-Bribery & Anti-Corruption",
+          "field": "abac_policy_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Yes, In Place, Certified",
+          "dataSource": "Anti-bribery / anti-corruption policy"
+        },
+        {
+          "code": "LF6.4",
+          "df": "DF6",
+          "name": "ESG & Sustainability",
+          "field": "esg_rating",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: A, B, Gold, Silver",
+          "dataSource": "ESG rating / evidence"
+        },
+        {
+          "code": "LF6.5",
+          "df": "DF6",
+          "name": "Data Security & IP Protection",
+          "field": "tisax_status",
+          "recommendationType": "Not Applicable",
+          "threshold": "One of: Certified, Compliant, AL3, AL2",
+          "dataSource": "TISAX / information-security evidence"
+        },
+        {
+          "code": "LF6.6",
+          "df": "DF6",
+          "name": "Ethical Sourcing & Human Rights",
+          "field": "ethical_sourcing_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Submitted, Compliant, Verified",
+          "dataSource": "Ethical-sourcing / human-rights declaration"
+        },
+        {
+          "code": "LF7.1",
+          "df": "DF7",
+          "name": "Single Source & Concentration Risk",
+          "field": "single_source_risk_level",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Low, Multi-Source",
+          "dataSource": "Source concentration assessment"
+        },
+        {
+          "code": "LF7.2",
+          "df": "DF7",
+          "name": "Geographic & Geopolitical Risk",
+          "field": "geopolitical_risk_level",
+          "recommendationType": "System Recommended",
+          "threshold": "One of: Low",
+          "dataSource": "Geographic / geopolitical risk assessment"
+        },
+        {
+          "code": "LF7.3",
+          "df": "DF7",
+          "name": "Sub-Tier & Supply Chain Dependency",
+          "field": "subtier_dependency_level",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Low, Mapped",
+          "dataSource": "Sub-tier mapping / visibility"
+        },
+        {
+          "code": "LF7.4",
+          "df": "DF7",
+          "name": "Business Continuity Planning",
+          "field": "bcp_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Present & Tested",
+          "dataSource": "Business continuity plan"
+        },
+        {
+          "code": "LF7.5",
+          "df": "DF7",
+          "name": "Supplier Stability & Ownership Risk",
+          "field": "ownership_stability_status",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Stable",
+          "dataSource": "Ownership / stability disclosure"
+        },
+        {
+          "code": "LF7.6",
+          "df": "DF7",
+          "name": "Capacity Resilience & Redundancy",
+          "field": "alternate_site_available",
+          "recommendationType": "Required by Policy",
+          "threshold": "One of: Yes, Multiple",
+          "dataSource": "Redundancy / alternate-site capability"
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { DFCode, EvaluationResult, RequestContext } from '../engine/types'
+import type { DFCode, EvaluationResult, RequestContext, SavedScenario } from '../engine/types'
 import type { AIClaim, AIExtractionResult, ClaimReviewStatus, Contradiction } from '../engine/aiTypes'
-import { evaluate } from '../engine/evaluate'
+import { evaluate, getStrategy, getWeights } from '../engine/evaluate'
 import { runFullExtraction } from '../engine/aiExtraction'
 import { transformAcceptedClaims } from '../engine/claimTransformer'
 
@@ -25,6 +25,12 @@ export const DEFAULT_CONTEXT: RequestContext = {
   customWeights: { DF1: 15, DF2: 15, DF3: 15, DF4: 15, DF5: 13, DF6: 13, DF7: 14 },
 }
 
+// Demo preset: identical to the reference context except part criticality is Medium.
+export const MEDIUM_CRITICALITY_CONTEXT: RequestContext = {
+  ...DEFAULT_CONTEXT,
+  part_criticality: 'Medium',
+}
+
 interface Store {
   context: RequestContext
   setContext: (patch: Partial<RequestContext>) => void
@@ -44,14 +50,25 @@ interface Store {
   getContradictionsForSupplier: (supplierId: string) => Contradiction[]
 
   // Accepted claims pushed into validation, keyed by supplierId → { field: value }.
-  // A supplier absent here evaluates directly from suppliers.json (unchanged).
   pushedClaims: Record<string, Record<string, unknown>>
-  pushAcceptedClaims: (supplierId: string) => number // returns count of fields pushed
+  pushAcceptedClaims: (supplierId: string) => number
 
-  // Evidence follow-up requests per supplier (count + last-requested timestamp).
-  // A visible workflow aid only — it does not affect scoring or labels.
+  // Evidence follow-up requests per supplier.
   followUps: Record<string, { count: number; lastAt: string }>
   recordFollowUp: (supplierId: string) => void
+
+  // User factor selections: true = included, false = skipped.
+  // Only non-locked factors (system-recommended, optional) can be toggled.
+  // Absent keys use the engine default (recommended = included, optional = excluded).
+  userSelections: Record<string, boolean>
+  setUserSelection: (code: string, included: boolean) => void
+  resetUserSelections: () => void
+
+  // Multi-scenario persistence: stores inputs only, results recomputed live.
+  savedScenarios: SavedScenario[]
+  saveScenario: (name: string) => void
+  deleteScenario: (id: string) => void
+  loadScenario: (id: string) => void
 }
 
 // Max follow-up requests before the supplier is left to be scored/labeled as-is.
@@ -72,11 +89,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   // Evidence follow-up request log, per supplier.
   const [followUps, setFollowUps] = useState<Record<string, { count: number; lastAt: string }>>({})
 
+  // User factor selections: boolean map for non-locked factors.
+  const [userSelections, setUserSelectionsState] = useState<Record<string, boolean>>({})
+
+  // Saved scenarios — in-memory only, session-only (lost on page refresh, by design).
+  const [savedScenarios, setSavedScenariosState] = useState<SavedScenario[]>([])
+
   const setContext = (patch: Partial<RequestContext>) => setContextState((c) => ({ ...c, ...patch }))
   const setWeight = (df: DFCode, value: number) =>
     setContextState((c) => ({ ...c, customWeights: { ...(c.customWeights ?? DEFAULT_CONTEXT.customWeights!), [df]: value } }))
 
-  const result = useMemo(() => evaluate(context, pushedClaims), [context, pushedClaims])
+  // Core evaluation: now passes userSelections into the engine.
+  const result = useMemo(() => evaluate(context, pushedClaims, userSelections), [context, pushedClaims, userSelections])
   const baseline = useMemo(() => evaluate(baselineContext), [baselineContext])
 
   // Transform this supplier's accepted claims and merge them into the values the
@@ -146,6 +170,33 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return aiExtractions[supplierId]?.contradictions ?? []
   }
 
+  // ── Scenario management ────────────────────────────────────────────
+
+  const saveScenario = (name: string) => {
+    const strategy = getStrategy(context)
+    const weights = getWeights(context, strategy)
+    const scenario: SavedScenario = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      name,
+      timestamp: new Date().toISOString(),
+      context: { ...context },
+      weights: { ...weights },
+      userSelections: { ...userSelections },
+    }
+    setSavedScenariosState((prev) => [...prev, scenario])
+  }
+
+  const deleteScenario = (id: string) => {
+    setSavedScenariosState((prev) => prev.filter((s) => s.id !== id))
+  }
+
+  const loadScenarioFn = (id: string) => {
+    const s = savedScenarios.find((sc) => sc.id === id)
+    if (!s) return
+    setContextState(s.context)
+    setUserSelectionsState(s.userSelections)
+  }
+
   const store: Store = {
     context,
     setContext,
@@ -153,7 +204,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     result,
     baseline,
     commitBaseline: () => setBaselineContext(context),
-    reset: () => setContextState(DEFAULT_CONTEXT),
+    reset: () => { setContextState(DEFAULT_CONTEXT); setUserSelectionsState({}) },
 
     aiExtractions,
     aiExtractionRunning,
@@ -168,6 +219,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     followUps,
     recordFollowUp,
+
+    userSelections,
+    setUserSelection: (code, included) => setUserSelectionsState((m) => ({ ...m, [code]: included })),
+    resetUserSelections: () => setUserSelectionsState({}),
+
+    savedScenarios,
+    saveScenario,
+    deleteScenario,
+    loadScenario: loadScenarioFn,
   }
   return <Ctx.Provider value={store}>{children}</Ctx.Provider>
 }

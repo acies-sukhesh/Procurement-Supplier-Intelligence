@@ -39,5 +39,18 @@ export function runFixtures(): Fixture[] {
   add('SUP-A-rank', 'Precision Auto Components is TOPSIS rank 1', '1', String(byId['SUP-A'].topsisRank))
   add('topsis-order', 'TOPSIS ranks are unique across all 5 suppliers', '5', String(new Set(res.suppliers.map((s) => s.topsisRank)).size))
 
+  // --- New DF-score formula coverage ---
+  // The reference (High-criticality) context upgrades every Optional factor to
+  // Mandatory, so the Mandatory/Conditional-Active DF-score change is a no-op there
+  // (which is why the checks above are unchanged). These two checks evaluate a
+  // Low-criticality variant, where 19 Optional factors survive, to lock in that
+  // Optional factors are excluded from the DF denominator.
+  const lowCrit = evaluate({ ...DEFAULT_CONTEXT, part_criticality: 'Low' })
+  const lowOptional = lowCrit.applicability.filter((a) => a.status === 'Optional').length
+  const lowBDf2 = lowCrit.suppliers.find((s) => s.id === 'SUP-B')!.dfResults.find((d) => d.df === 'DF2')!
+
+  add('lowcrit-optional-count', 'Low-criticality context surfaces 19 Optional factors (new DF-score path is exercised)', '19', String(lowOptional))
+  add('lowcrit-df2-excludes-optional', 'Meridian DF2 scores on 3 Mandatory/Conditional factors, excluding its 2 Optional; new-formula score = 63.3% (old formula: 58.0%)', '3 @ 63.3%', `${lowBDf2.scoredCount} @ ${lowBDf2.score === null ? '—' : (lowBDf2.score * 100).toFixed(1) + '%'}`)
+
   return checks
 }

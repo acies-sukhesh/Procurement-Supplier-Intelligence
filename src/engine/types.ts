@@ -77,10 +77,20 @@ export interface FactorApplicability {
   df: DFCode
   name: string
   field: string
-  status: ApplicabilityStatus
-  base: BaseStatus
+  status: ApplicabilityStatus        // final status used by scoring (after user selection applied)
+  base: BaseStatus                   // the default status from applicabilityRules.json
+  ruleStatus: ApplicabilityStatus    // the policy recommendation computed by the rule engine (before user selection)
+  selectionType: SelectionType       // determines UI behavior for this factor
+  locked: boolean                    // true if the user cannot change this factor's inclusion
+  includedInEvaluation: boolean      // true if this factor is active in the scoring denominator
   reason: ReasonStep[]
 }
+
+export type SelectionType =
+  | 'policy-required'       // Mandatory — locked, always included
+  | 'system-recommended'    // Conditional Active — included by default, user can skip
+  | 'optional'              // Optional — excluded by default, user can add
+  | 'not-applicable'        // Not Applicable — locked, always excluded
 
 export interface FactorValidation {
   code: string
@@ -101,10 +111,11 @@ export interface DFResult {
   name: string
   short: string
   weight: number
-  score: number | null // average of scored factors, null if none applicable
-  scoredCount: number
+  score: number | null // mean of the Mandatory/Conditional-Active factors, null if none scored
+  scoredCount: number // number of factors in the DF-score denominator
   hasMandatory: boolean
   belowFloor: boolean
+  optionalFallback: boolean // true when no required factor was in scope and the score rests on Optional factors only
 }
 
 export interface SupplierResult {
@@ -128,4 +139,27 @@ export interface EvaluationResult {
   strategy: Strategy
   weights: Record<DFCode, number>
   context: RequestContext
+}
+
+// Persisted scenario — stores inputs only; results are recomputed live via evaluate().
+export interface SavedScenario {
+  id: string
+  name: string
+  timestamp: string                          // ISO date string
+  context: RequestContext
+  weights: Record<DFCode, number>
+  userSelections: Record<string, boolean>     // true = included, false = skipped
+}
+
+// Impact analysis for a single inactive factor — what happens if the user adds it.
+export interface FactorImpact {
+  code: string
+  name: string
+  df: DFCode
+  field: string
+  selectionType: SelectionType
+  readinessDelta: Record<string, number>     // supplierId → readiness change
+  confidenceDelta: number                    // change in active-factor coverage (0..1)
+  riskBlindSpot: string                      // what risk area is unmonitored
+  missingDataSource: string                  // the evidence document needed
 }

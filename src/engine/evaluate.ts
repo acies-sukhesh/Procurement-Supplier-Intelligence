@@ -62,14 +62,43 @@ function evaluateSupplier(
   factors.forEach((f) => (counts[f.status] += 1))
 
   // Per decision factor roll-up.
+  const mean = (fs: FactorValidation[]) => fs.reduce((s, f) => s + (f.score as number), 0) / fs.length
   const dfResults: DFResult[] = DF_CODES.map((code) => {
     const meta = decisionFactors.find((d) => d.code === code)!
     const dfFactors = factors.filter((f) => f.df === code)
-    const scored = dfFactors.filter((f) => f.score !== null)
-    const score = scored.length ? scored.reduce((s, f) => s + (f.score as number), 0) / scored.length : null
+
+    // DF Score = mean of the Mandatory / Conditional-Active leaf factors only.
+    // Optional factors are still scored per-leaf (for the register/UI) but excluded
+    // from the DF denominator whenever any required factor is in scope. Not Applicable
+    // factors already carry a null score and are never counted.
+    const required = dfFactors.filter(
+      (f) => (f.applicability === 'Mandatory' || f.applicability === 'Conditional Active') && f.score !== null,
+    )
+
+    let score: number | null
+    let scoredCount: number
+    let optionalFallback = false
+    if (required.length > 0) {
+      score = mean(required)
+      scoredCount = required.length
+    } else {
+      // Fallback: no Mandatory / Conditional-Active factor is applicable for this DF,
+      // so fall back to the mean of whatever Optional factors are applicable and flag
+      // the DF as resting on optional evidence only.
+      // NOTE: currently dead code — every DF has at least one unconditional
+      // default-Mandatory leaf that no request context can drop (e.g. DF6 → LF6.1
+      // Regulatory & Legal Compliance, which has no notApplicableIf rule), so
+      // `required` is never empty in practice. Kept as defensive behavior in case the
+      // applicability rules change to allow a DF with no required factors in scope.
+      const optional = dfFactors.filter((f) => f.applicability === 'Optional' && f.score !== null)
+      score = optional.length ? mean(optional) : null
+      scoredCount = optional.length
+      optionalFallback = optional.length > 0
+    }
+
     const hasMandatory = applicability.some((a) => a.df === code && a.status === 'Mandatory')
     const belowFloor = score !== null && hasMandatory && score < strategy.mandatoryFloor
-    return { df: code, name: meta.name, short: meta.short, weight: weights[code], score, scoredCount: scored.length, hasMandatory, belowFloor }
+    return { df: code, name: meta.name, short: meta.short, weight: weights[code], score, scoredCount, hasMandatory, belowFloor, optionalFallback }
   })
 
   // Readiness = weighted average over decision factors that have a score.
@@ -133,13 +162,15 @@ function computeTopsis(
 // `overrides` lets accepted, human-reviewed AI claims override specific supplier
 // values (keyed by supplierId → { field: value }). Empty overrides (the default)
 // reproduce the suppliers.json-driven path exactly.
+// `userSelections` maps factor codes to boolean inclusion overrides for non-locked factors.
 export function evaluate(
   ctx: RequestContext,
   overrides: Record<string, Record<string, unknown>> = {},
+  userSelections: Record<string, boolean> = {},
 ): EvaluationResult {
   const strategy = getStrategy(ctx)
   const weights = getWeights(ctx, strategy)
-  const applicability = computeApplicability(ctx, strategy, weights)
+  const applicability = computeApplicability(ctx, strategy, weights, userSelections)
 
   const partial = suppliersData.map((s) => {
     const ov = overrides[s.id]
