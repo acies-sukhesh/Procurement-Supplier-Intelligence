@@ -1,4 +1,4 @@
-import { useStore } from '../state/store'
+import { useStore, MEDIUM_CRITICALITY_CONTEXT } from '../state/store'
 import { getStrategy, getWeights, DF_CODES } from '../engine/evaluate'
 import decisionFactors from '../data/decisionFactors.json'
 import strategies from '../data/strategies.json'
@@ -105,7 +105,10 @@ export default function EvaluationRequest() {
 
       <Card>
         <div className="card-head"><div className="card-title">Sourcing strategy</div>
-          <button className="chip-btn" onClick={reset}>Reset to reference</button>
+          <span style={{ display: 'flex', gap: 8 }}>
+            <button className="chip-btn" onClick={() => setContext(MEDIUM_CRITICALITY_CONTEXT)}>Load Medium-criticality preset</button>
+            <button className="chip-btn" onClick={reset}>Reset to reference</button>
+          </span>
         </div>
         <div className="card-pad">
           <div className="segmented">

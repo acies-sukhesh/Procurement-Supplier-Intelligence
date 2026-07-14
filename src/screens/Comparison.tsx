@@ -1,7 +1,13 @@
+import { useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, LabelList, Tooltip } from 'recharts'
 import { useStore } from '../state/store'
+import { buildSkipImpacts } from '../engine/projection'
+import { whyItMatters } from '../engine/evidence'
+import decisionFactors from '../data/decisionFactors.json'
 import { Card, LabelPill, SUPPLIER_COLORS } from '../components/ui'
-import type { FactorValidation, SupplierResult } from '../engine/types'
+import type { DFCode, FactorValidation, SupplierResult } from '../engine/types'
+
+const dfShort = (df: DFCode) => decisionFactors.find((d) => d.code === df)?.short ?? df
 
 const DF_COLORS = ['#2f6d8f', '#7a8b3f', '#b8860b', '#a5673b', '#6a7f8c', '#8a5a6a', '#4a7c59']
 
@@ -25,10 +31,30 @@ function nextActions(s: SupplierResult): string[] {
 }
 
 export default function Comparison() {
-  const { result } = useStore()
+  const { result, context, pushedClaims } = useStore()
   const ranked = [...result.suppliers].sort((a, b) => a.topsisRank - b.topsisRank)
   const chartData = ranked.map((s) => ({ id: s.id, name: s.name, readiness: Number((s.readiness * 100).toFixed(1)), color: SUPPLIER_COLORS[s.id] }))
   const bestFit = ranked.find((s) => s.criticalFlags.length === 0) ?? ranked[0]
+
+  // Portfolio sensitivity: which currently-active factors cost the most readiness
+  // across all five suppliers if skipped. Reuses the existing buildSkipImpacts.
+  const sensitivity = useMemo(() => {
+    const included = new Map(result.applicability.map((a) => [a.code, a.includedInEvaluation]))
+    const agg = new Map<string, { name: string; df: DFCode; field: string; total: number; per: Record<string, number> }>()
+    for (const s of result.suppliers) {
+      for (const imp of buildSkipImpacts(context, pushedClaims, s)) {
+        if (!included.get(imp.code)) continue // only active/selected factors
+        const e = agg.get(imp.code) ?? { name: imp.name, df: imp.df, field: imp.field, total: 0, per: {} }
+        e.total += imp.delta // delta <= 0 (readiness drop)
+        e.per[s.id] = imp.delta
+        agg.set(imp.code, e)
+      }
+    }
+    return [...agg.entries()]
+      .map(([code, v]) => ({ code, ...v }))
+      .sort((a, b) => a.total - b.total) // most negative (largest drop) first
+      .slice(0, 8)
+  }, [result, context, pushedClaims])
 
   return (
     <div className="col gap16">
@@ -46,6 +72,50 @@ export default function Comparison() {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      </Card>
+
+      {/* ──── Portfolio factor sensitivity (readiness at risk if skipped) ──── */}
+      <Card>
+        <div className="card-head">
+          <div className="card-title">Factor sensitivity — readiness at risk if skipped</div>
+          <div className="card-hint">active factors ranked by total readiness drop across all 5 suppliers</div>
+        </div>
+        <div className="table-wrap">
+          <table className="data">
+            <thead>
+              <tr><th>Factor</th><th>Decision factor</th><th>Total at risk</th><th>Per-supplier drop</th><th>Why it matters</th></tr>
+            </thead>
+            <tbody>
+              {sensitivity.map((r) => (
+                <tr key={r.code}>
+                  <td>
+                    <strong style={{ fontWeight: 600 }}>{r.name}</strong>
+                    <div className="mono muted" style={{ fontSize: 11 }}>{r.code}</div>
+                  </td>
+                  <td className="muted" style={{ fontSize: 12.5 }}>{r.df} · {dfShort(r.df)}</td>
+                  <td>
+                    <span className="mono delta-down" style={{ fontSize: 13, fontWeight: 600 }}>{(r.total * 100).toFixed(1)} pts</span>
+                    <div className="muted" style={{ fontSize: 10.5 }}>across all suppliers</div>
+                  </td>
+                  <td>
+                    <div className="flex" style={{ gap: 7, flexWrap: 'wrap' }}>
+                      {result.suppliers.map((s) => {
+                        const d = (r.per[s.id] ?? 0) * 100
+                        return (
+                          <span key={s.id} className="mono muted" style={{ fontSize: 10.5 }} title={s.name}>
+                            <span style={{ display: 'inline-block', width: 7, height: 7, borderRadius: 2, background: SUPPLIER_COLORS[s.id], marginRight: 3 }} />
+                            {d.toFixed(1)}
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </td>
+                  <td className="muted" style={{ fontSize: 12, maxWidth: 280 }}>{whyItMatters(r.field)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </Card>
 

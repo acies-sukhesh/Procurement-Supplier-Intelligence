@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 import { useStore } from '../state/store'
 import { DF_CODES } from '../engine/evaluate'
+import { buildSupplierProjection } from '../engine/projection'
 import decisionFactors from '../data/decisionFactors.json'
 import { Card, LabelPill, SUPPLIER_COLORS } from '../components/ui'
 
 export default function Aggregation() {
-  const { result } = useStore()
+  const { result, context, pushedClaims } = useStore()
   const [active, setActive] = useState<string>(result.suppliers[0].id)
   const [visible, setVisible] = useState<Record<string, boolean>>(() => Object.fromEntries(result.suppliers.map((s) => [s.id, true])))
 
@@ -21,6 +22,13 @@ export default function Aggregation() {
   })
 
   const supplier = result.suppliers.find((s) => s.id === active)!
+  const projection = useMemo(
+    () => buildSupplierProjection(context, pushedClaims, supplier),
+    [context, pushedClaims, supplier],
+  )
+
+  const pct = (n: number) => (n * 100).toFixed(1) + '%'
+  const signed = (n: number) => (n >= 0 ? '+' : '') + (n * 100).toFixed(1)
 
   return (
     <div className="col gap16">
@@ -94,6 +102,110 @@ export default function Aggregation() {
               </tr>
             </tfoot>
           </table>
+        </div>
+      </Card>
+
+      <Card>
+        <div className="card-head">
+          <div className="card-title">{supplier.id} · What-if: closing evidence gaps</div>
+          <span className="muted" style={{ fontSize: 12 }}>Hypothetical — does not change {supplier.id}'s actual score</span>
+        </div>
+        <div className="card-pad col gap16">
+          {/* ---- Section A: score impact of applicable factors with no data ---- */}
+          <div>
+            <div className="section-label" style={{ marginTop: 0 }}>Score impact if provided</div>
+            {projection.missing.length === 0 ? (
+              <p className="muted" style={{ fontSize: 13, margin: 0 }}>
+                No applicable (Mandatory / Conditional-Active) factors are missing evidence for {supplier.id}. Every in-scope
+                factor already has data and is scored.
+              </p>
+            ) : (
+              <>
+                <p className="muted" style={{ fontSize: 12.5, marginTop: 0 }}>
+                  These applicable factors currently have no evidence, so they score 0 today and are already dragging readiness
+                  down. Providing evidence that passes would lift readiness cumulatively:
+                </p>
+                <div className="table-wrap">
+                  <table className="data">
+                    <thead>
+                      <tr><th>Step</th><th>Factor</th><th>Decision factor</th><th>Δ readiness</th><th>Cumulative readiness</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="muted">Now</td>
+                        <td className="muted" style={{ fontSize: 12.5 }}>Current score (unchanged)</td>
+                        <td className="muted">—</td>
+                        <td className="mono muted">—</td>
+                        <td className="mono"><strong>{pct(projection.readinessNow)}</strong></td>
+                      </tr>
+                      {projection.missing.map((m, i) => (
+                        <tr key={m.code}>
+                          <td className="mono muted">{i + 1}</td>
+                          <td><strong style={{ fontWeight: 600 }}>{m.name}</strong> <span className="muted mono" style={{ fontSize: 11 }}>{m.code}</span></td>
+                          <td className="muted" style={{ fontSize: 12.5 }}>{m.df} · {m.applicability}</td>
+                          <td className="mono" style={{ color: 'var(--pass)' }}>{signed(m.delta)}</td>
+                          <td className="mono">{pct(m.readinessAfter)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr style={{ fontWeight: 600 }}>
+                        <td colSpan={4}>All {projection.missing.length} provided</td>
+                        <td className="readiness-num" style={{ fontSize: 16 }}>{pct(projection.readinessAfterAllMissing)}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* ---- Section B: critical items (label override) ---- */}
+          {projection.critical.length > 0 && (
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: 14 }}>
+              <div className="section-label" style={{ marginTop: 0 }}>
+                <span className="pill below" style={{ marginRight: 8 }}>Critical items</span>
+              </div>
+              <p className="muted" style={{ fontSize: 12.5, marginTop: 0 }}>
+                These factors fire a Critical Flag that overrides {supplier.id}'s label to
+                <LabelPill label={projection.labelNow} /> regardless of score. Resolving them removes the label override in
+                addition to the score change below — this is separate from the score-only impact above.
+              </p>
+              <div className="table-wrap">
+                <table className="data">
+                  <thead>
+                    <tr><th>Factor</th><th>Decision factor</th><th>Readiness</th><th>Label if resolved</th></tr>
+                  </thead>
+                  <tbody>
+                    {projection.critical.map((c) => (
+                      <tr key={c.code}>
+                        <td><strong style={{ fontWeight: 600 }}>{c.name}</strong> <span className="muted mono" style={{ fontSize: 11 }}>{c.code}</span></td>
+                        <td className="muted" style={{ fontSize: 12.5 }}>{c.df}</td>
+                        <td className="mono">{pct(projection.readinessNow)} → {pct(c.readinessAfter)} <span style={{ color: 'var(--pass)' }}>({signed(c.delta)})</span></td>
+                        <td>
+                          <span className="flex center gap8">
+                            <LabelPill label={projection.labelNow} /> →
+                            {c.clearsOverrideAlone
+                              ? <LabelPill label={c.labelAfter} />
+                              : <span className="muted" style={{ fontSize: 12 }}>override remains (other critical items)</span>}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  {projection.critical.length > 1 && (
+                    <tfoot>
+                      <tr style={{ fontWeight: 600 }}>
+                        <td colSpan={2}>Resolve all {projection.critical.length} critical items</td>
+                        <td className="mono">{pct(projection.readinessAfterAllCritical)}</td>
+                        <td><LabelPill label={projection.labelAfterAllCritical} /></td>
+                      </tr>
+                    </tfoot>
+                  )}
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       </Card>
     </div>

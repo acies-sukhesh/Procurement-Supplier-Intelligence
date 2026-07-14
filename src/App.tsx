@@ -5,6 +5,7 @@ import { PipelineStepper } from './components/PipelineStepper'
 import { runFixtures } from './engine/fixtures'
 import { buildChecklist, buildGapRegister } from './engine/evidence'
 import EvaluationRequest from './screens/EvaluationRequest'
+import RuleConfiguration from './screens/RuleConfiguration'
 import RulesApplicability from './screens/RulesApplicability'
 import EvidenceChecklist from './screens/EvidenceChecklist'
 import MetricDictionary from './screens/MetricDictionary'
@@ -18,7 +19,7 @@ import AIEvidenceIntake from './screens/AIEvidenceIntake'
 import AIClaimsReview from './screens/AIClaimsReview'
 
 type ScreenId =
-  | 'request' | 'rules' | 'checklist' | 'intake' | 'review' | 'dictionary' | 'data'
+  | 'policy' | 'request' | 'rules' | 'checklist' | 'intake' | 'review' | 'dictionary' | 'data'
   | 'validation' | 'aggregation' | 'comparison'
   | 'scenario' | 'summary'
 
@@ -32,6 +33,7 @@ const PIPELINE: ScreenId[] = ['rules', 'checklist', 'intake', 'review', 'data', 
 // existing "Evidence" group in pipeline order (checklist → intake → review → register).
 const NAV: NavGroup[] = [
   { label: 'Set up', items: [
+    { id: 'policy', label: 'Rule Configuration', icon: 'document' },
     { id: 'request', label: 'Evaluation Request', icon: 'request' },
     { id: 'rules', label: 'Rules & Applicability', icon: 'rules' },
   ] },
@@ -40,9 +42,6 @@ const NAV: NavGroup[] = [
     { id: 'intake', label: 'Evidence Intake', icon: 'intake' },
     { id: 'review', label: 'Extracted Claims Review', icon: 'review' },
     { id: 'data', label: 'Evidence Register', icon: 'data' },
-  ] },
-  { label: 'Reference', items: [
-    { id: 'dictionary', label: 'Metric Dictionary', icon: 'dictionary' },
   ] },
   { label: 'Evaluate', items: [
     { id: 'validation', label: 'Validation', icon: 'validation' },
@@ -53,9 +52,13 @@ const NAV: NavGroup[] = [
     { id: 'scenario', label: 'Scenario Impact', icon: 'scenario' },
     { id: 'summary', label: 'Prototype Summary', icon: 'summary' },
   ] },
+  { label: 'Reference', items: [
+    { id: 'dictionary', label: 'Metric Dictionary', icon: 'dictionary' },
+  ] },
 ]
 
 const TITLES: Record<ScreenId, { title: string; sub: string }> = {
+  policy: { title: 'Rule Configuration', sub: 'The active policy template that defines which factors are required, recommended, or out of scope. Admin-managed — the evaluation reads applicability from these rules per request context.' },
   request: { title: 'Evaluation Request', sub: 'Configure the part requirement and sourcing context. Applicable factors are derived live as you change inputs.' },
   rules: { title: 'Rules & Applicability', sub: 'How each of the 43 leaf factors resolves under the current request, with a full reason trace per factor.' },
   checklist: { title: 'Evidence Checklist', sub: 'Simulated: the evidence to request per applicable factor, grouped by source. A presentation layer before the threshold check — no real extraction.' },
@@ -155,8 +158,9 @@ export default function App() {
               <PipelineStepper current={screen} onGo={(id) => setScreen(id as ScreenId)} counts={badges} />
             </div>
           )}
+          {screen === 'policy' && <RuleConfiguration />}
           {screen === 'request' && <EvaluationRequest />}
-          {screen === 'rules' && <RulesApplicability />}
+          {screen === 'rules' && <RulesApplicability onNavigate={(id) => setScreen(id as ScreenId)} />}
           {screen === 'checklist' && <EvidenceChecklist />}
           {screen === 'intake' && <AIEvidenceIntake />}
           {screen === 'review' && <AIClaimsReview onNavigate={(id) => setScreen(id as ScreenId)} />}
