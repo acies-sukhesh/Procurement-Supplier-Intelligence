@@ -23,8 +23,7 @@ import metrics from '../../data/metrics.json'
 import factorImpacts from '../../data/factorImpacts.json'
 import { SectionCard } from '../../components/SectionCard'
 import { KpiRow, KpiTile } from '../../components/KpiTile'
-import { StatusBadge, ApplicabilityBadge, ReadinessBadge } from '../../components/StatusBadge'
-import { SupplierAvatar } from '../../components/SupplierAvatar'
+import { StatusBadge, ApplicabilityBadge } from '../../components/StatusBadge'
 import { AppDrawer } from '../../components/AppDrawer'
 import type { DFCode, FactorApplicability, FactorImpact } from '../../engine/types'
 
@@ -70,10 +69,7 @@ export default function ApplicabilityTab({ onNavigate }: { onNavigate?: (id: str
   const [savedFlash, setSavedFlash] = useState(false)
 
   const activeCount = app.filter((a) => a.includedInEvaluation).length
-  const applicableCount = app.filter((a) => a.selectionType !== 'not-applicable').length
   const inactiveNonNa = app.filter((a) => !a.includedInEvaluation && a.selectionType !== 'not-applicable').length
-
-  const baseline = useMemo(() => evaluate(context, {}, {}), [context])
 
   const handleSaveScenario = () => {
     if (!scenarioName.trim()) return
@@ -119,7 +115,63 @@ export default function ApplicabilityTab({ onNavigate }: { onNavigate?: (id: str
           <Button variant="contained" onClick={handleSaveScenario} disabled={!scenarioName.trim() || savedFlash}>
             {savedFlash ? 'Saved ✓' : 'Save as Scenario'}
           </Button>
+          
         </Stack>
+        <Button size="small" sx={{ mt: 1 }} onClick={() => onNavigate?.('scenario')}>
+          Go to Scenario Comparison to compare saved scenarios →
+        </Button>
+            <Accordion expanded={showImpact} onChange={() => setShowImpact((v) => !v)} disableGutters sx={{ border: '1px solid #E4E7EC', borderRadius: 3, '&:before': { display: 'none' } }}>
+        <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Typography variant="subtitle2" fontWeight={700}>What-if impact analyzer</Typography>
+            <Typography variant="caption" color="text.secondary">{inactiveNonNa} inactive factor{inactiveNonNa === 1 ? '' : 's'}</Typography>
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails sx={{ p: 0 }}>
+          {sortedImpacts.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" sx={{ p: 3, textAlign: 'center' }}>
+              All available factors are already included in the evaluation.
+            </Typography>
+          ) : (
+            <Box sx={{ overflowX: 'auto' }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Factor</TableCell>
+                    <TableCell>Readiness impact (Σ suppliers)</TableCell>
+                    <TableCell>Risk blind spot</TableCell>
+                    <TableCell>Missing data source</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {sortedImpacts.map(({ imp, total }) => {
+                    const totalPts = total * 100
+                    return (
+                      <TableRow key={imp.code} hover>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight={600}>{imp.name}</Typography>
+                          <Typography variant="caption" color="text.secondary">{imp.code} · {imp.df}</Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" fontWeight={700} color={totalPts > 0.05 ? 'success.main' : totalPts < -0.05 ? 'error.main' : 'text.secondary'}>
+                            {totalPts > 0.05 ? '▲' : totalPts < -0.05 ? '▼' : '–'} {Math.abs(totalPts).toFixed(1)} pts
+                          </Typography>
+                        </TableCell>
+                        <TableCell sx={{ maxWidth: 240 }}><Typography variant="caption">{imp.riskBlindSpot}</Typography></TableCell>
+                        <TableCell><Chip size="small" label={imp.missingDataSource} variant="outlined" /></TableCell>
+                        <TableCell>
+                          <Button size="small" variant="outlined" onClick={() => setUserSelection(imp.code, true)}>+ Include</Button>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </Box>
+          )}
+        </AccordionDetails>
+      </Accordion>
       {decisionFactors.map((df) => {
         const rows = app.filter((a) => a.df === (df.code as DFCode))
         const dfActive = rows.filter((r) => r.includedInEvaluation).length
@@ -178,86 +230,9 @@ export default function ApplicabilityTab({ onNavigate }: { onNavigate?: (id: str
         )
       })}
 
-      <SectionCard title="Live readiness preview" hint={`Evaluating ${activeCount} of ${applicableCount} applicable factors`}>
-        <Stack spacing={1}>
-          {result.suppliers.map((s) => {
-            const base = baseline.suppliers.find((x) => x.id === s.id)!
-            const dPts = (s.readiness - base.readiness) * 100
-            return (
-              <Stack key={s.id} direction="row" alignItems="center" justifyContent="space-between" sx={{ py: 0.75, borderBottom: '1px dashed #E4E7EC' }}>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <SupplierAvatar id={s.id} name={s.name} size={24} />
-                  <Typography variant="body2" fontWeight={600}>{s.name}</Typography>
-                </Stack>
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                  <Typography variant="body2" fontWeight={700}>{(s.readiness * 100).toFixed(1)}%</Typography>
-                  <ReadinessBadge label={s.label} />
-                  <Typography variant="caption" color={dPts > 0.05 ? 'success.main' : dPts < -0.05 ? 'error.main' : 'text.secondary'} sx={{ minWidth: 70, textAlign: 'right' }}>
-                    {dPts > 0.05 ? '▲' : dPts < -0.05 ? '▼' : '–'} {dPts >= 0 ? '+' : ''}{dPts.toFixed(1)} pts
-                  </Typography>
-                </Stack>
-              </Stack>
-            )
-          })}
-        </Stack>
-        <Button size="small" sx={{ mt: 1 }} onClick={() => onNavigate?.('scenario')}>
-          Go to Scenario Comparison to compare saved scenarios →
-        </Button>
-      </SectionCard>
+  
 
-      <Accordion expanded={showImpact} onChange={() => setShowImpact((v) => !v)} disableGutters sx={{ border: '1px solid #E4E7EC', borderRadius: 3, '&:before': { display: 'none' } }}>
-        <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
-          <Stack direction="row" spacing={1.5} alignItems="center">
-            <Typography variant="subtitle2" fontWeight={700}>What-if impact analyzer</Typography>
-            <Typography variant="caption" color="text.secondary">{inactiveNonNa} inactive factor{inactiveNonNa === 1 ? '' : 's'}</Typography>
-          </Stack>
-        </AccordionSummary>
-        <AccordionDetails sx={{ p: 0 }}>
-          {sortedImpacts.length === 0 ? (
-            <Typography variant="body2" color="text.secondary" sx={{ p: 3, textAlign: 'center' }}>
-              All available factors are already included in the evaluation.
-            </Typography>
-          ) : (
-            <Box sx={{ overflowX: 'auto' }}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Factor</TableCell>
-                    <TableCell>Readiness impact (Σ suppliers)</TableCell>
-                    <TableCell>Risk blind spot</TableCell>
-                    <TableCell>Missing data source</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sortedImpacts.map(({ imp, total }) => {
-                    const totalPts = total * 100
-                    return (
-                      <TableRow key={imp.code} hover>
-                        <TableCell>
-                          <Typography variant="body2" fontWeight={600}>{imp.name}</Typography>
-                          <Typography variant="caption" color="text.secondary">{imp.code} · {imp.df}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2" fontWeight={700} color={totalPts > 0.05 ? 'success.main' : totalPts < -0.05 ? 'error.main' : 'text.secondary'}>
-                            {totalPts > 0.05 ? '▲' : totalPts < -0.05 ? '▼' : '–'} {Math.abs(totalPts).toFixed(1)} pts
-                          </Typography>
-                        </TableCell>
-                        <TableCell sx={{ maxWidth: 240 }}><Typography variant="caption">{imp.riskBlindSpot}</Typography></TableCell>
-                        <TableCell><Chip size="small" label={imp.missingDataSource} variant="outlined" /></TableCell>
-                        <TableCell>
-                          <Button size="small" variant="outlined" onClick={() => setUserSelection(imp.code, true)}>+ Include</Button>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </Box>
-          )}
-        </AccordionDetails>
-      </Accordion>
-
+  
       {selected && (
         <AppDrawer open onClose={() => setSelected(null)} title={selected.name} subtitle={`${selected.code} · ${selected.df} · ${selected.field}`}>
           <TraceContent factor={selected} />

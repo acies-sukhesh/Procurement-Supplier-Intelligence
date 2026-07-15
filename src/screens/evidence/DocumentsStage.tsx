@@ -37,7 +37,6 @@ export default function DocumentsStage() {
 
       <SectionCard
         title="Submitted document packs"
-        hint="Simulated intake — one card per supplier with a document pack ready for extraction."
         action={
           <Button size="small" startIcon={<ChecklistRoundedIcon />} onClick={() => setChecklistOpen(true)}>
             View expected evidence checklist

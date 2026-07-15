@@ -54,13 +54,49 @@ export default function MissingEvidenceStage() {
   }
 
   return (
+    
     <Stack spacing={2}>
       <KpiRow>
         <KpiTile value={missing} label="Missing" tone="critical" />
         <KpiTile value={weak} label="Weak" tone="watch" />
         <KpiTile value={rows.length} label="Total gaps" />
       </KpiRow>
-
+      {Object.keys(missingBySupplier).length > 0 && (
+        <SectionCard title="Request follow-up on missing evidence">
+          <Stack spacing={1.5}>
+            {Object.entries(missingBySupplier).map(([sid, mrows]) => {
+              const sup = suppliers.find((s) => s.id === sid)
+              const fu = followUps[sid]
+              const count = fu?.count ?? 0
+              const reached = count >= FOLLOWUP_LIMIT
+              return (
+                <Stack key={sid} direction="row" alignItems="center" justifyContent="space-between" sx={{ pb: 1.25, borderBottom: '1px dashed #E4E7EC' }}>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <SupplierAvatar id={sid} name={sid} size={22} />
+                    <Typography variant="body2" fontWeight={600}>{sid}</Typography>
+                    <Typography variant="caption" color="text.secondary">{mrows.length} missing item{mrows.length === 1 ? '' : 's'}</Typography>
+                    {count > 0 && <Typography variant="caption" color="text.secondary">· requested {count}×</Typography>}
+                  </Stack>
+                  {reached ? (
+                    <StatusBadge tone="watch" label="Follow-up limit reached" icon={false} />
+                  ) : sup?.contact_email ? (
+                    <Button
+                      size="small"
+                      startIcon={<FlagRoundedIcon fontSize="small" />}
+                      onClick={() => {
+                        recordFollowUp(sid)
+                        setDraft(buildFollowUpDraft(sup.contact_email, sup.name, result.context, mrows))
+                      }}
+                    >
+                      Draft follow-up ({mrows.length})
+                    </Button>
+                  ) : null}
+                </Stack>
+              )
+            })}
+          </Stack>
+        </SectionCard>
+      )}
       <SectionCard title="Evidence gaps" hint="Weak or missing evidence across all suppliers, ranked by factor criticality.">
         <Box sx={{ overflowX: 'auto' }}>
           <Table size="small">
@@ -98,42 +134,7 @@ export default function MissingEvidenceStage() {
         </Box>
       </SectionCard>
 
-      {Object.keys(missingBySupplier).length > 0 && (
-        <SectionCard title="Request follow-up on missing evidence">
-          <Stack spacing={1.5}>
-            {Object.entries(missingBySupplier).map(([sid, mrows]) => {
-              const sup = suppliers.find((s) => s.id === sid)
-              const fu = followUps[sid]
-              const count = fu?.count ?? 0
-              const reached = count >= FOLLOWUP_LIMIT
-              return (
-                <Stack key={sid} direction="row" alignItems="center" justifyContent="space-between" sx={{ pb: 1.25, borderBottom: '1px dashed #E4E7EC' }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <SupplierAvatar id={sid} name={sid} size={22} />
-                    <Typography variant="body2" fontWeight={600}>{sid}</Typography>
-                    <Typography variant="caption" color="text.secondary">{mrows.length} missing item{mrows.length === 1 ? '' : 's'}</Typography>
-                    {count > 0 && <Typography variant="caption" color="text.secondary">· requested {count}×</Typography>}
-                  </Stack>
-                  {reached ? (
-                    <StatusBadge tone="watch" label="Follow-up limit reached" icon={false} />
-                  ) : sup?.contact_email ? (
-                    <Button
-                      size="small"
-                      startIcon={<FlagRoundedIcon fontSize="small" />}
-                      onClick={() => {
-                        recordFollowUp(sid)
-                        setDraft(buildFollowUpDraft(sup.contact_email, sup.name, result.context, mrows))
-                      }}
-                    >
-                      Draft follow-up ({mrows.length})
-                    </Button>
-                  ) : null}
-                </Stack>
-              )
-            })}
-          </Stack>
-        </SectionCard>
-      )}
+
 
       {draft && (
         <AppDialog
